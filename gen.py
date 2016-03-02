@@ -12,7 +12,7 @@ def nicePrint(tab):
     for s in tab2:
         print(s, end='')
         
-#dzięki http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python#id1
+#thanks to http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python#id1
 def weighted_choice_sub(weights):
     rnd = random.random() * sum(weights)
     for i, w in enumerate(weights):
