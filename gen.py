@@ -39,7 +39,7 @@ def generate_model_random_sent(cfdist, word, num=15):
         t.append(word)
         word = choose(cfdist, word)
         dots = t.count('.')
-    nicePrint(t)
+    # nicePrint(t)
     return t
 
 def generate_from_text(text, word, num=15):
@@ -57,6 +57,8 @@ def generate_from_text(text, word, num=15):
 #first we have to functionalize reading the text from a file, because we want to use sent_tokenize(method) and it seems taht it has to be done on raw text input.
 
 def make_text(text):
+    if type(text) == list:
+        return [text, 11, len([word.lower() for word in text if word.isalpha()])]
     f=open(text,'rU', encoding='utf-8')
     raw=f.read()
     f.close()
@@ -75,7 +77,7 @@ def simple_statistic(text):
     return [round(num_words/num_sent), round(num_words/voc)]
 
 print(simple_statistic("teksty/bruno.txt"))
-
+print(simple_statistic(generate_from_text("teksty/bruno.txt",'dom',11)))
 
 
 
