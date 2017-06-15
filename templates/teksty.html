@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-4">
+        <p><a href="http://localhost:5000">BACK</a></p>
+        <p><a href="http://www.gutenberg.org/ebooks/">PROJECT GUTENBERG</a></p>
+        <form class="form-style-7" method=post enctype=multipart/form-data>
+            <ul>
+                <li>
+                    <label for="name">File</label>
+                    <input type=file name=file>
+                    <span>upload a .txt file</span>
+                </li>
+                <li>
+                    <input type="submit" value="upload">
+                </li>
+            </ul>
+        </form>
+    </div>
+    <div class="col-8">
+        {% include 'lib.html'%}
+    </div>
+    </div>
+{% endblock %}

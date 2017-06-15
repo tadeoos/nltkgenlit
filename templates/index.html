@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-4">
+    	<p><a href="upload">UPLOAD FILE</a></p>
+        <form class="form-style-7" method="POST" id="tadeoa">
+            <ul>
+                <li>
+                    <label for="email">Book</label>
+                    <select name="carlist" form="tadeoa">
+                        {% for file in files%}
+                        <option value="{{file}}" {% if file==org %}selected{% endif %}>{{file}}</option>
+                        {% endfor %}
+                    </select>
+                    <span>Choose a text to imitate</span>
+                </li>
+                <li>
+                    <label for="name">Length</label>
+                    <input type="number" name="quantity" min="1" max="12" value="{{num}}">
+                    <span># of sentences to generate</span>
+                </li>
+                <li>
+                    <input type="submit" name="normal" value="go">
+                </li>
+                <li>
+                    <input type="submit" name="random" value="RANDOM">
+                </li>
+            </ul>
+        </form>
+        <!-- <p>FILE: {{org}}</p>
+        <p>SENTS: {{num}}</p> -->
+        
+        <!-- <p><a href="http://www.gutenberg.org/ebooks/">PROJECT GUTENBERG</a></p> -->
+    </div>
+    <div class="col-8">
+        <div id="res"><p>{{gm}}</p></div>
+    </div>
+    </div>
+{% endblock %}
