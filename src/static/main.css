@@ -25,8 +25,15 @@
 html {
     font-family: "Lucida Console", Monaco, monospace;
 }
+
+body {
+    /*background-color: #96A098;*/
+    margin: 0px;
+
+}
+
 .header {
-    background-color: #1F9C30;
+    background-color: #2B803E;
     color: #ffffff;
     padding: 15px;
     text-align: center;
@@ -35,11 +42,42 @@ html {
 #res {
     margin-top: 30px;
     font-family: monospace;
-    background-color: #F8ECC2;
+    /*background-color: #F8ECC2;*/
+    background-color: #0D2F3E;
+    /*background-color: #2A2E2B;*/
+    
     padding: 20px;
     text-align: justify;
     border-radius: 1em;
     font-size: larger;
+}
+
+.res-grey{
+    color: #425F66;
+    /*color: #87D498;*/
+}
+
+.res-blue{
+    color: #2370BD;
+    /*color: #1D8935;*/
+}
+
+.res-green{
+    color: #6C8306;
+    /*color: #57B96D;*/
+}
+
+.res-magenta{
+    color: #BA216B;
+    /*color: #096C1F;*/
+}
+
+.res-text{
+    color: #F8ECC2;
+}
+
+a {
+    color: #106022;
 }
 
 .form-style-7{
@@ -147,15 +185,16 @@ html {
 }
 .form-style-7 input[type="submit"],
 .form-style-7 input[type="button"]{
-    background: #1F9C30;
+    background: #2B803E;
     border: none;
     padding: 10px 20px 10px 20px;
-    border-bottom: 3px solid #5994FF;
+    border-bottom: 3px solid #50A162;
     border-radius: 3px;
-    color: #D2E2FF;
+    color: #80C18E;
 }
 .form-style-7 input[type="submit"]:hover,
 .form-style-7 input[type="button"]:hover{
-    background: #6B9FFF;
+    background: #50A162;
     color:#fff;
+    cursor: pointer;
 }

@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 import os
 import random
 from flask import Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from gen import generate_from_text
 
-UPLOAD_FOLDER = '/Users/Tadeo/dev/TAD/tadeoa/teksty'
+dir_path = os.path.dirname(os.path.realpath(__file__))
+UPLOAD_FOLDER = dir_path + "/teksty"
 ALLOWED_EXTENSIONS = set(['txt'])
 
 app = Flask(__name__)
@@ -16,20 +18,20 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def tadeoa():
-    files = [name for name in os.listdir("teksty") if name!='.DS_Store']
+    files = [name for name in os.listdir("teksty") if name != '.DS_Store']
     file = 'CHOOSE ABOVE'
     gm = ''
     num = 1
     if request.method == 'POST':
         if request.form.get('random', None):
             file = random.choice(files)
-            num = random.randint(1,20)
+            num = random.randint(1,10)
         else:
             num = request.form.get('quantity')
             file = request.form.get('carlist')
         print(request.form)
         try:
-            gm = generate_from_text(file="teksty/" + file, num=int(num))
+            gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=True)
         except Exception as e:
             print(e)
             # import ipdb; ipdb.set_trace()  # breakpoint 1a3e95fc //
@@ -57,3 +59,7 @@ def upload_file():
 
     os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | sed "s/\(<pre>\|<\/pre>\)//g" | tr "|" "\n" > templates/lib.html')
     return render_template("teksty.html")
+
+if __name__ == '__main__':
+    # print(dir_path, UPLOAD_FOLDER)
+    app.run(debug=True,host='0.0.0.0')

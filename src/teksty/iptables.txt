@@ -1,0 +1,133 @@
+#Ambari Node
+
+sudo service iptables start
+iptables --append INPUT --match tcp --protocol tcp --dport 443 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8080 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8440 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8441 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8443 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 22 --jump ACCEPT
+sudo service iptables save
+sudo service iptables restart
+
+#Master Node
+
+sudo service iptables start
+iptables --append INPUT --match tcp --protocol tcp --dport 16000 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50070 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50090 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50470 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8020 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9000 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6700 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6701 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6702 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6703 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6704 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6705 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6706 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6707 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 2181 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8088 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8050 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8025 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8141 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8030 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 45454 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 10200 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8188 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8190 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 19888 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 2888 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 3888 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 3772 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 3773 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6627 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 18000 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 18080 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8744 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8080 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 10015 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 22 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 16010 --jump ACCEPT
+sudo service iptables save
+sudo service iptables restart
+
+#Compute Node
+
+sudo service iptables start
+iptables --append INPUT --match tcp --protocol tcp --dport 50075 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50475 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50010 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50020 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 16020 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 16030 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8080 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8085 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9090 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9095 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8088 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 45454 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 10020 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 19888 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 13562 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 22 --jump ACCEPT
+sudo service iptables save
+sudo service iptables restart
+
+#Search Node
+
+sudo service iptables start
+iptables --append INPUT --match tcp --protocol tcp --dport 9200 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9300 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9400 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 22 --jump ACCEPT
+sudo service iptables save
+sudo service iptables restart
+
+#Reporting Node
+
+sudo service iptables start
+iptables --append INPUT --match tcp --protocol tcp --dport 80 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 443 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 22 --jump ACCEPT
+sudo service iptables save
+sudo service iptables restart
+
+#Endpoint Node
+
+sudo service iptables start
+iptables --append INPUT --match tcp --protocol tcp --dport 88 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 443 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8000 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8001 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8002 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8003 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8004 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8005 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8006 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8007 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 7000 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 7001 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 7199 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9042 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9160 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 22 --jump ACCEPT
+sudo service iptables save
+sudo service iptables restart
+
+#Stream Node
+
+sudo service iptables start
+iptables --append INPUT --match tcp --protocol tcp --dport 9092 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 6667 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 41414 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 8020 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 9000 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50010 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 50020 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 2181 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 16020 --jump ACCEPT
+iptables --append INPUT --match tcp --protocol tcp --dport 22 --jump ACCEPT
+sudo service iptables save
+sudo service iptables restart

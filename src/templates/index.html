@@ -23,7 +23,7 @@
                     <input type="submit" name="normal" value="go">
                 </li>
                 <li>
-                    <input type="submit" name="random" value="RANDOM">
+                    <input type="submit" name="random" value="random">
                 </li>
             </ul>
         </form>
@@ -33,7 +33,10 @@
         <!-- <p><a href="http://www.gutenberg.org/ebooks/">PROJECT GUTENBERG</a></p> -->
     </div>
     <div class="col-8">
-        <div id="res"><p>{{gm}}</p></div>
+        <div id="res">
+            <p>{{gm|safe}}</p>
+            <p class="res-text">LEGEND: 1 - grey 10>= green 25>=blue 50>=magenta</p>
+        </div>
     </div>
     </div>
 {% endblock %}

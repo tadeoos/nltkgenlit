@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import nltk
 import random
@@ -30,6 +31,24 @@ def nicePrint(tab, freq):
         color = get_color(colors, freq[i])
         cprint(tab2[i], color, end='')
     print()
+
+def parse_color_for_html(tab, freq):
+    intp = ['.', ',', ';', '?', '!', ':', "'", '...']
+    tab2 = [tab[0]]
+    freq = [2] + freq
+    colors = {1: 'grey', 10: 'green', 25: 'blue', 50: 'magenta'}
+    for s in tab[1:]:
+        if s not in intp:
+            tab2.append(' ' + s)
+        else:
+            tab2.append(s)
+
+    result = []
+    for i in range(len(tab2)):
+        color = get_color(colors, freq[i])
+        # cprint(tab2[i], color, end='')
+        result.append('<span class="res-{}">{}</span>'.format(color, tab2[i]))
+    return ''.join(result)
 
 # thanks to
 # http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python#id1
@@ -82,7 +101,7 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
         # print(len(numOfChoices), len(t))
         nicePrint(t, numOfChoices)
         # print(t)
-
+    html = parse_color_for_html(t, numOfChoices)
     # printowanie dziwnych rzeczy
         # print(numOfChoices)
         # print(sum([1 for n in numOfChoices if n > 1 ])/len(numOfChoices))
@@ -97,8 +116,9 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
             counter = max(counter, mounter)
             mounter = 0
     # print("the longest streak: ", counter)
-    
-    res = {'text': re.sub('\s([^\w]{1,2}\s)', '\g<1>', ' '.join(t)), 
+    old_text = re.sub('\s([^\w]{1,2}\s)', '\g<1>', ' '.join(t))
+
+    res = {'text': html, 
             'data': ( round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
                       reduce(lambda x, y: x * y, numOfChoices), 
                       counter
@@ -108,7 +128,7 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
     return res
 
 
-def generate_from_text(string=None, file=None, num=15):
+def generate_from_text(string=None, file=None, num=15, prnt=False):
     if not (string or file):
         return None
     elif file:
@@ -123,8 +143,9 @@ def generate_from_text(string=None, file=None, num=15):
     bigrams = nltk.bigrams(text1)
 
     # ile słów pojawia się tylko raz?
-    print('Hapaxów: {:.1%}'.format(
-        len(nltk.probability.FreqDist(text1).hapaxes()) / len(set(text1))))
+    if prnt:
+        print('Hapaxów: {:.1%}'.format(
+            len(nltk.probability.FreqDist(text1).hapaxes()) / len(set(text1))))
 
     trigrams = nltk.trigrams(text1)
 
@@ -140,8 +161,9 @@ def generate_from_text(string=None, file=None, num=15):
     # print(sorted(list(cfd2[word].items()), key = lambda x: x[1], reverse=True))
 
     # generate_model_random(cfd, word, num)
-    print('--Generated text:\n')
-    model = generate_model_random_sent(cfd2, word, num, True)
+    if prnt:
+        print('--Generated text:\n')
+    model = generate_model_random_sent(cfd2, word, num, prnt)
     gm = model['data']
     averages = [[], [], []]
     result = model['text']
@@ -153,7 +175,7 @@ def generate_from_text(string=None, file=None, num=15):
         averages[0].append(gm[0])
         averages[1].append(gm[1])
         averages[2].append(gm[2])
-    # print(averages[0])
+
     avgs = [sum(a) / len(a) for a in averages]
     print('\n--Średnie: \n rozgalezien: {:.1%} ; rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(
         avgs[0], len(str(avgs[1])), avgs[2]))
@@ -172,11 +194,11 @@ def generate_from_text(string=None, file=None, num=15):
     # if c[1] == '.':
     # print(sorted(list(cfd2[c].items()), key = lambda x: x[1], reverse=True))
 
+
+
+
 # testy
-
-
 d = [(1, 2), (1, 3), ('a', 2), ('b', 3), ('a', 4)]
-
 
 def oczysc(l):
     # fukncja sprawia ze dostajemy unique zliczenia słów z początku (porządek
@@ -214,7 +236,6 @@ def game():
         if askcon == 'n':
             break
 
-#
 
 if __name__ == "__main__":
     args = sys.argv
