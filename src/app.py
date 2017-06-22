@@ -34,9 +34,8 @@ def tadeoa():
         print(request.form)
         try:
             gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=0)
-            print(gm)
         except Exception as e:
-            print(e)
+            print('INDEX ERROR: ', e)
             # import ipdb; ipdb.set_trace()  # breakpoint 1a3e95fc //
 
     return render_template("index.html", files=files, gm=gm['text'], org=file, num=num)
@@ -63,14 +62,15 @@ def upload_file():
     os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | tr "|" "\n" > templates/lib.html')
     return render_template("teksty.html")
 
-@app.route('/api/<int:sents>', methods=['GET'])
-def get_szulc(sents):
+@app.route('/api/<file>/<int:sents>', methods=['GET'])
+def get_szulc(file, sents):
+
     try:
-        gm = generate_from_text(file="teksty/pl-szulc-sklepy.txt", num=sents, prnt=0)
+        gm = generate_from_text(file="teksty/" + file, num=sents, prnt=0)
     except Exception as e:
         print('API ERROR', e)
         abort(404)
-    return json.dumps({'data': gm['raw']}, ensure_ascii=False)
+    return json.dumps({'source': file,'data': gm['raw']}, ensure_ascii=False)
 
 
 if __name__ == '__main__':

@@ -35,12 +35,17 @@
     <div class="col-8">
         <div id="res">
             <p>{{gm|safe}}</p>
-		<p class="res-text">LEGEND (# of possible choices):<br>
+        <p class="res-text">LEGEND (# of possible choices):<br>
             <span class="res-grey">grey</span> = 1<br>
             <span class="res-green">green</span> <=10<br>
             <span class="res-blue">blue</span> <=25<br>
             25< <span class="res-magenta">magenta</span>
         </p>
+        </div>
+        <div id="info">
+            <p>Choose length and text which tadeoa will imitate.</p> 
+            <p>His method is very simple: he just randomly generates word by word based on a conditional (trigrams) frequency distribution. The probability space is weighted accordingly.</p>
+            <p>There is also an API available at /api/file-name/length e.g. <a href="/api/pl-szulc-sklepy.txt/4" target="_blank"><code>/api/pl-szulc-sklepy.txt/4</code></a> </p>
         </div>
     </div>
     </div>
