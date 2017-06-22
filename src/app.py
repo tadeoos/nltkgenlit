@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import random
-from flask import Flask, request, redirect, url_for, render_template
+import json
+from flask import Flask, request, redirect, url_for, render_template, abort
 from werkzeug.utils import secure_filename
 from gen import generate_from_text
 
@@ -11,6 +12,7 @@ ALLOWED_EXTENSIONS = set(['txt'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['JSON_AS_ASCII'] = False
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -20,7 +22,7 @@ def allowed_file(filename):
 def tadeoa():
     files = [name for name in os.listdir("teksty") if name != '.DS_Store']
     file = 'CHOOSE ABOVE'
-    gm = ''
+    gm = {'text':''}
     num = 1
     if request.method == 'POST':
         if request.form.get('random', None):
@@ -32,11 +34,12 @@ def tadeoa():
         print(request.form)
         try:
             gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=0)
+            print(gm)
         except Exception as e:
             print(e)
             # import ipdb; ipdb.set_trace()  # breakpoint 1a3e95fc //
 
-    return render_template("index.html", files=files, gm=gm, org=file, num=num)
+    return render_template("index.html", files=files, gm=gm['text'], org=file, num=num)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -59,6 +62,16 @@ def upload_file():
 
     os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | tr "|" "\n" > templates/lib.html')
     return render_template("teksty.html")
+
+@app.route('/api/<int:sents>', methods=['GET'])
+def get_szulc(sents):
+    try:
+        gm = generate_from_text(file="teksty/pl-szulc-sklepy.txt", num=sents, prnt=0)
+    except Exception as e:
+        print('API ERROR', e)
+        abort(404)
+    return json.dumps({'data': gm['raw']}, ensure_ascii=False)
+
 
 if __name__ == '__main__':
     # print(dir_path, UPLOAD_FOLDER)

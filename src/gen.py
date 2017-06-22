@@ -119,7 +119,8 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
     # print("the longest streak: ", counter)
     old_text = re.sub('\s([^\w]{1,2}\s)', '\g<1>', ' '.join(t))
 
-    res = {'text': html,
+    res = {'raw': old_text,
+           'text': html,
            'data': (round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
                     reduce(lambda x, y: x * y, numOfChoices),
                     counter
@@ -167,7 +168,7 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     model = generate_model_random_sent(cfd2, word, num, prnt)
     gm = model['data']
     averages = [[], [], []]
-    result = model['text']
+    result = model
 
     for i in range(10):
         model = generate_model_random_sent(cfd2, word, num, False)
