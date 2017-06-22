@@ -119,7 +119,6 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
     # print("the longest streak: ", counter)
     old_text = re.sub('\s([^\w]{1,2}\s)', '\g<1>', ' '.join(t))
 
-    import ipdb; ipdb.set_trace()  # breakpoint 60c1845e //s
     res = {'text': html,
            'data': (round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
                     reduce(lambda x, y: x * y, numOfChoices),
@@ -179,8 +178,8 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
         averages[2].append(gm[2])
 
     avgs = [sum(a) / len(a) for a in averages]
-    print('\n--Średnie: \n rozgalezien: {:.1%} ; rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(
-        avgs[0], len(str(avgs[1])), avgs[2]))
+    # print('\n--Średnie: \n rozgalezien: {:.1%} ; rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(
+    #    avgs[0], len(str(avgs[1])), avgs[2]))
 
     return result
     # print(avgs)

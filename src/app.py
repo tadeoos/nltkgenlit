@@ -31,7 +31,7 @@ def tadeoa():
             file = request.form.get('carlist')
         print(request.form)
         try:
-            gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=True)
+            gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=0)
         except Exception as e:
             print(e)
             # import ipdb; ipdb.set_trace()  # breakpoint 1a3e95fc //
@@ -57,7 +57,7 @@ def upload_file():
             return redirect(url_for('upload_file',
                                     filename=filename))
 
-    os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | sed "s/\(<pre>\|<\/pre>\)//g" | tr "|" "\n" > templates/lib.html')
+    os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | tr "|" "\n" > templates/lib.html')
     return render_template("teksty.html")
 
 if __name__ == '__main__':

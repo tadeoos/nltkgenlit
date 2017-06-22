@@ -35,7 +35,7 @@
     <div class="col-8">
         <div id="res">
             <p>{{gm|safe}}</p>
-		<p class="res-text">LEGEND: <br>grey ->1<br>green <=10<br>blue <=25<br>25< magenta</p>
+            <p class="res-text">LEGEND: 1 - grey 10>= green 25>=blue 50>=magenta</p>
         </div>
     </div>
     </div>
