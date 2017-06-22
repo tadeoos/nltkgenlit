@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nltk
 import random
 import sys
 import re
-from termcolor import cprint
 from functools import reduce
+
+import nltk
+from termcolor import cprint
 
 
 # stuff just for printing
@@ -31,6 +32,7 @@ def nicePrint(tab, freq):
         color = get_color(colors, freq[i])
         cprint(tab2[i], color, end='')
     print()
+
 
 def parse_color_for_html(tab, freq):
     intp = ['.', ',', ';', '?', '!', ':', "'", '...']
@@ -74,6 +76,7 @@ def choose(cfdist, word):
     if type(word) == tuple:
         # print(word(1), cfd[wcs][0])
         return (word[1], cfd[wcs][0])
+
     return cfd[wcs][0]
 
 
@@ -86,8 +89,6 @@ def generate_model_random(cfdist, word, num=15):
 def generate_model_random_sent(cfdist, word, num=15, prnt=True):
     t = [word[0]]
     dots = 0
-    # print(word)
-    # print((cfdist[word].items()))
     numOfChoices = []
     while dots < num:
         t.append(word[1])
@@ -103,10 +104,10 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
         # print(t)
     html = parse_color_for_html(t, numOfChoices)
     # printowanie dziwnych rzeczy
-        # print(numOfChoices)
-        # print(sum([1 for n in numOfChoices if n > 1 ])/len(numOfChoices))
-        # print(1 / reduce(lambda x, y: x*y, numOfChoices))
-        # print(len([1 for n in numOfChoices if n == 1])/len(numOfChoices))
+    # print(numOfChoices)
+    # print(sum([1 for n in numOfChoices if n > 1 ])/len(numOfChoices))
+    # print(1 / reduce(lambda x, y: x*y, numOfChoices))
+    # print(len([1 for n in numOfChoices if n == 1])/len(numOfChoices))
 
     counter, mounter = 0, 0
     for n in numOfChoices:
@@ -118,12 +119,13 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
     # print("the longest streak: ", counter)
     old_text = re.sub('\s([^\w]{1,2}\s)', '\g<1>', ' '.join(t))
 
-    res = {'text': html, 
-            'data': ( round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
-                      reduce(lambda x, y: x * y, numOfChoices), 
-                      counter
+    import ipdb; ipdb.set_trace()  # breakpoint 60c1845e //s
+    res = {'text': html,
+           'data': (round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
+                    reduce(lambda x, y: x * y, numOfChoices),
+                    counter
                     )
-          }
+           }
 
     return res
 
@@ -195,10 +197,9 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     # print(sorted(list(cfd2[c].items()), key = lambda x: x[1], reverse=True))
 
 
-
-
 # testy
 d = [(1, 2), (1, 3), ('a', 2), ('b', 3), ('a', 4)]
+
 
 def oczysc(l):
     # fukncja sprawia ze dostajemy unique zliczenia słów z początku (porządek
