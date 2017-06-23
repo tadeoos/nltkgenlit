@@ -25,13 +25,15 @@ def tadeoa():
     gm = {'text':''}
     num = 1
     if request.method == 'POST':
-        if request.form.get('random', None):
-            file = random.choice(files)
-            num = random.randint(1,10)
-        else:
+        if not request.form.get('random', None):
             num = request.form.get('quantity')
             file = request.form.get('carlist')
-        print(request.form)
+            if '..' in file:
+                file = random.choice(files)    
+        else:
+            file = random.choice(files)
+            num = random.randint(1,10)
+        # print(request.form) 
         try:
             gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=0)
         except Exception as e:
@@ -75,4 +77,4 @@ def get_szulc(file, sents):
 
 if __name__ == '__main__':
     # print(dir_path, UPLOAD_FOLDER)
-    app.run(debug=True,host='0.0.0.0')
+    app.run(debug=0,host='0.0.0.0')
