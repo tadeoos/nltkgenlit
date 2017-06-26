@@ -4,7 +4,10 @@
 import random
 import sys
 import re
+import traceback
+
 from functools import reduce
+
 
 import nltk
 from termcolor import cprint
@@ -165,20 +168,25 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     # generate_model_random(cfd, word, num)
     if prnt:
         print('--Generated text:\n')
-    model = generate_model_random_sent(cfd2, word, num, prnt)
-    gm = model['data']
-    averages = [[], [], []]
-    result = model
-
-    for i in range(10):
-        model = generate_model_random_sent(cfd2, word, num, False)
+    try: 
+        model = generate_model_random_sent(cfd2, word, num, prnt)
         gm = model['data']
-        # print('Procent rozgalezien {:.1%} rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(gm[0], len(str(gm[1])), gm[2]))
-        averages[0].append(gm[0])
-        averages[1].append(gm[1])
-        averages[2].append(gm[2])
+        averages = [[], [], []]
+        result = model
+    except Exception as e:
+        print('INDEX ERROR: ', e)
+        print(traceback.print_exc())
+        result = {'text': '<span class="res-text">There was an error :(</span>'}
 
-    avgs = [sum(a) / len(a) for a in averages]
+    # for i in range(10):
+    #     model = generate_model_random_sent(cfd2, word, num, False)
+    #     gm = model['data']
+    #     # print('Procent rozgalezien {:.1%} rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(gm[0], len(str(gm[1])), gm[2]))
+    #     averages[0].append(gm[0])
+    #     averages[1].append(gm[1])
+    #     averages[2].append(gm[2])
+
+    # avgs = [sum(a) / len(a) for a in averages]
     # print('\n--Średnie: \n rozgalezien: {:.1%} ; rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(
     #    avgs[0], len(str(avgs[1])), avgs[2]))
 
@@ -196,9 +204,6 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     # if c[1] == '.':
     # print(sorted(list(cfd2[c].items()), key = lambda x: x[1], reverse=True))
 
-
-# testy
-d = [(1, 2), (1, 3), ('a', 2), ('b', 3), ('a', 4)]
 
 
 def oczysc(l):

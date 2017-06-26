@@ -5,4 +5,5 @@ RUN apt-get install -y aha tree
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
-CMD ["python", "app.py"]
+RUN python -c "import nltk; nltk.download('punkt')"
+CMD python server.py

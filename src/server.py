@@ -4,11 +4,16 @@
 
 from app import app
 
+
+
 # Import CherryPy
 import cherrypy
 
 if __name__ == '__main__':
 
+    cherrypy.config.update({
+        'log.screen': True
+       })
     # Mount the application
     cherrypy.tree.graft(app, "/")
 

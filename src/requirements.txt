@@ -1,3 +1,4 @@
 flask
 nltk
 termcolor
+cherrypy

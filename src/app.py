@@ -2,7 +2,7 @@
 import os
 import random
 import json
-from flask import Flask, request, redirect, url_for, render_template, abort
+from flask import Flask, flash, request, redirect, url_for, render_template, abort
 from werkzeug.utils import secure_filename
 from gen import generate_from_text
 
@@ -20,25 +20,20 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def tadeoa():
-    files = [name for name in os.listdir("teksty") if name != '.DS_Store']
+    files = [name for name in os.listdir(UPLOAD_FOLDER) if name != '.DS_Store']
     file = 'CHOOSE ABOVE'
     gm = {'text':''}
     num = 1
     if request.method == 'POST':
         if not request.form.get('random', None):
             num = request.form.get('quantity')
-            file = request.form.get('carlist')
+            file = request.form.get('book')
             if '..' in file:
                 file = random.choice(files)    
         else:
             file = random.choice(files)
             num = random.randint(1,10)
-        # print(request.form) 
-        try:
-            gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=0)
-        except Exception as e:
-            print('INDEX ERROR: ', e)
-            # import ipdb; ipdb.set_trace()  # breakpoint 1a3e95fc //
+        gm = generate_from_text(file="teksty/" + file, num=int(num), prnt=0)
 
     return render_template("index.html", files=files, gm=gm['text'], org=file, num=num)
 
@@ -62,13 +57,16 @@ def upload_file():
                                     filename=filename))
 
     os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | tr "|" "\n" > templates/lib.html')
+    
     return render_template("teksty.html")
 
-@app.route('/api/<file>/<int:sents>', methods=['GET'])
-def get_szulc(file, sents):
-
+@app.route('/rand', methods=['GET'])
+def get_random():
     try:
-        gm = generate_from_text(file="teksty/" + file, num=sents, prnt=0)
+        files = [name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')]
+        file = random.choice(files)
+        num = random.randint(1,10)
+        gm = generate_from_text(file=UPLOAD_FOLDER + "/" + file, num=num, prnt=0)
     except Exception as e:
         print('API ERROR', e)
         abort(404)
@@ -77,4 +75,4 @@ def get_szulc(file, sents):
 
 if __name__ == '__main__':
     # print(dir_path, UPLOAD_FOLDER)
-    app.run(debug=0,host='0.0.0.0')
+    app.run(debug=1,host='0.0.0.0')
