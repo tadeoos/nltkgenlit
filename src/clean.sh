@@ -1,3 +1,1 @@
-docker stop test
-docker rm test
-docker rmi test
+docker stop main && docker rm main && docker rmi main

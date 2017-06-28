@@ -1,6 +1,12 @@
-web:
-  build: ./src
-  ports:
-   - "5000:5000"
-  volumes:
-   - .:/code
+version: '2'
+services:
+  litgen:
+    image: litgen
+    expose:
+     - 80
+  main:
+    image: main
+    ports:
+        - "80:80"
+    links:
+        - tadeoa

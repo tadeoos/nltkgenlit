@@ -8,7 +8,6 @@ import traceback
 
 from functools import reduce
 
-
 import nltk
 from termcolor import cprint
 
@@ -106,6 +105,7 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
         nicePrint(t, numOfChoices)
         # print(t)
     html = parse_color_for_html(t, numOfChoices)
+    
     # printowanie dziwnych rzeczy
     # print(numOfChoices)
     # print(sum([1 for n in numOfChoices if n > 1 ])/len(numOfChoices))
@@ -253,7 +253,3 @@ if __name__ == "__main__":
             game()
     else:
         game()
-# for i in range(9, 17):
-    # generate_from_text("teksty/wola-mocy.txt",i)
-
-# generate_from_text()

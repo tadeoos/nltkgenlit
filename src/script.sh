@@ -1,2 +1,1 @@
-docker build . -t test
-docker run -dt --name test -p 80:80 test
+docker build . -t main && docker run -d --name main -p 80:80 main
