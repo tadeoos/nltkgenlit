@@ -70,7 +70,7 @@ def get_random():
     except Exception as e:
         print('API ERROR', e)
         abort(404)
-    return json.dumps({'source': file,'data': gm['raw']}, ensure_ascii=False)
+    return json.dumps({'source': file,'data': gm['raw']}, indent=2, ensure_ascii=False)
 
 
 if __name__ == '__main__':
