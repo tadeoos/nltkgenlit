@@ -1,13 +1,20 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="row">
     <div class="col-4">
-    	<p><a href="upload">UPLOAD FILE</a></p>
-        <form class="form-style-7" method="POST" id="tadeoa">
+        {#
+        <p><a href="upload">UPLOAD FILE</a></p> #}
+        <div class="form-style-7" method="" id="tadeoa">
+            <div id="form-buttons">
+                <a href="upload" style="text-decoration: none;">
+                    <button class="form-button">UPLOAD FILE</button>
+                </a>
+                <button class="form-button">GO</button>
+                <button class="form-button" id="button">RANDOM</button>
+            </div>
             <ul>
                 <li>
                     <label for="book">Book</label>
-                    <select name="book" form="tadeoa">
+                    <select id="book" name="book" form="tadeoa">
                         {% for file in files%}
                         <option value="{{file}}" {% if file==org %}selected{% endif %}>{{file}}</option>
                         {% endfor %}
@@ -19,39 +26,32 @@
                     <input id="len" type="number" name="quantity" min="1" max="12" value="{{num}}">
                     <span># of sentences to generate</span>
                 </li>
-                <li>
-                    <input type="submit" name="normal" value="go">
-                </li>
-                <li>
-                    <button id="button">Random</button>
-                    {# <input type="submit" name="random" value="random"> #}
-                </li>
             </ul>
-        </form>
-        
+        </div>
+        <div id="legend">
+            <p class="res-text">LEGEND<br>
+                <br>
+                <span class="res-grey">grey</span> = 1 <span class="comment">  # of possible choices</span>
+                <br>
+                <span class="res-green">green</span> <= 10<br>
+                    <span class="res-blue">blue</span> <= 25<br>
+                        25 < <span class="res-magenta">magenta</span>
+            </p>
+        </div>
     </div>
     <div class="col-8">
-        <div id="res">
-            <p id="res-anaconda">{{gm|safe}}</p>
-        <p class="res-text">LEGEND (# of possible choices):<br>
-            <span class="res-grey">grey</span> = 1<br>
-            <span class="res-green">green</span> <=10<br>
-            <span class="res-blue">blue</span> <=25<br>
-            25< <span class="res-magenta">magenta</span>
-        </p>
-        </div>
         <div id="info">
-            <p>Choose length and text which tadeoa will imitate.</p> 
+            <p>Choose length and text which tadeoa will imitate.</p>
             <p>His method is very simple: he just randomly generates word by word based on a conditional (trigrams) frequency distribution. The probability space is weighted accordingly.</p>
             <p>There is also an API available at <a href="rand" target="_blank"><code>/rand</code></a> </p>
         </div>
+        <div id="res">
+            <p id="res-anaconda">{{gm|safe}}</p>
+        </div>
     </div>
-    </div>
-
-
+</div>
 <script type="text/javascript">
-
-var    loadBtn = document.getElementById("button"),
+var loadBtn = document.getElementById("button"),
     pAnaconda = document.getElementById("res-anaconda");
 
 function download() {
@@ -61,12 +61,13 @@ function download() {
     xhr.onloadend = function(e) {
         // progressBar.value = e.loaded;
         loadBtn.disabled = false;
-        loadBtn.innerHTML = 'Random';
+        loadBtn.innerHTML = 'RANDOM';
     };
-    xhr.onload = function (e) {
+    xhr.onload = function(e) {
         if (this.status == 200) {
             console.log(xhr.response.source);
             document.getElementById("len").value = xhr.response.len.toString();
+            document.getElementById('book').value = xhr.response.source
             pAnaconda.innerHTML = xhr.response.data.text;
         }
     };
@@ -75,10 +76,8 @@ function download() {
 
 loadBtn.addEventListener("click", function(e) {
     this.disabled = true;
-    this.innerHTML = "Processing...";
+    pAnaconda.innerHTML = "<div id='loader'><img src='litgen/static/25.gif'></div>";
     download();
 });
-
 </script>
-
 {% endblock %}

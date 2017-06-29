@@ -14,7 +14,10 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 UPLOAD_FOLDER = dir_path + "/teksty"
 ALLOWED_EXTENSIONS = set(['txt'])
 
-app = Flask(__name__)
+sdir = os.path.join(os.path.abspath(
+    os.path.dirname(__file__)), 'static')
+
+app = Flask(__name__, static_folder=sdir, static_url_path="/litgen/static")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['JSON_AS_ASCII'] = False
 # cors = CORS(app, resources={r"/rand": {"origins": "*"}})
@@ -113,7 +116,7 @@ def get_random():
     try:
         files = [name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')]
         file = random.choice(files)
-        num = random.randint(1,10)
+        num = random.randint(2,8)
         print(num)
         gm = generate_from_text(file=UPLOAD_FOLDER + "/" + file, num=num, prnt=0)
     except Exception as e:

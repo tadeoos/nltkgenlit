@@ -26,9 +26,14 @@ html {
     font-family: "Lucida Console", Monaco, monospace;
 }
 
+p {
+    color: #fff;
+}
+
 body {
     /*background-color: #96A098;*/
     margin: 0px;
+    background-color: #0D2F3E;
 
 }
 
@@ -50,6 +55,34 @@ body {
     text-align: justify;
     border-radius: 1em;
     font-size: larger;
+}
+
+#legend {
+    margin-top: 30px;
+    font-family: monospace;
+    padding: 20px;
+    max-width: 300px;
+    margin: 10px auto;
+}
+
+.comment{
+    font-style: italic;
+    color: grey;
+    margin-left: 10px;
+}
+
+#button {
+    padding: 10px 12px 10px 12px;
+}
+
+#loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#form-buttons {
+    margin: 20px 0;
 }
 
 .res-grey{
@@ -183,17 +216,17 @@ a {
 .form-style-7 textarea{
     resize:none;
 }
-#button,
+.form-button,
 .form-style-7 input[type="submit"],
 .form-style-7 input[type="button"]{
     background: #2B803E;
     border: none;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 16px 10px 16px;
     border-bottom: 3px solid #50A162;
     border-radius: 3px;
     color: #80C18E;
 }
-#button,
+.form-button,
 .form-style-7 input[type="submit"]:hover,
 .form-style-7 input[type="button"]:hover{
     background: #50A162;
