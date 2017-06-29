@@ -2,9 +2,13 @@
 import os
 import random
 import json
-from flask import Flask, flash, request, redirect, url_for, render_template, abort
+from flask import Flask, flash, request, make_response, current_app, redirect, Response, url_for, render_template, abort
 from werkzeug.utils import secure_filename
+from datetime import timedelta
+from functools import update_wrapper
 from gen import generate_from_text
+
+
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 UPLOAD_FOLDER = dir_path + "/teksty"
@@ -13,6 +17,49 @@ ALLOWED_EXTENSIONS = set(['txt'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['JSON_AS_ASCII'] = False
+# cors = CORS(app, resources={r"/rand": {"origins": "*"}})
+
+
+def crossdomain(origin=None, methods=None, headers=None,
+                max_age=21600, attach_to_all=True,
+                automatic_options=True):
+    if methods is not None:
+        methods = ', '.join(sorted(x.upper() for x in methods))
+    if headers is not None and not isinstance(headers, list):
+        headers = ', '.join(x.upper() for x in headers)
+    if not isinstance(origin, list):
+        origin = ', '.join(origin)
+    if isinstance(max_age, timedelta):
+        max_age = max_age.total_seconds()
+
+    def get_methods():
+        if methods is not None:
+            return methods
+
+        options_resp = current_app.make_default_options_response()
+        return options_resp.headers['allow']
+
+    def decorator(f):
+        def wrapped_function(*args, **kwargs):
+            if automatic_options and request.method == 'OPTIONS':
+                resp = current_app.make_default_options_response()
+            else:
+                resp = make_response(f(*args, **kwargs))
+            if not attach_to_all and request.method != 'OPTIONS':
+                return resp
+
+            h = resp.headers
+
+            h['Access-Control-Allow-Origin'] = origin
+            h['Access-Control-Allow-Methods'] = get_methods()
+            h['Access-Control-Max-Age'] = str(max_age)
+            if headers is not None:
+                h['Access-Control-Allow-Headers'] = headers
+            return resp
+
+        f.provide_automatic_options = False
+        return update_wrapper(wrapped_function, f)
+    return decorator
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -61,16 +108,21 @@ def upload_file():
     return render_template("teksty.html")
 
 @app.route('/rand', methods=['GET'])
+@crossdomain(origin='*')
 def get_random():
     try:
         files = [name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')]
         file = random.choice(files)
         num = random.randint(1,10)
+        print(num)
         gm = generate_from_text(file=UPLOAD_FOLDER + "/" + file, num=num, prnt=0)
     except Exception as e:
         print('API ERROR', e)
-        abort(404)
-    return json.dumps({'source': file,'data': gm['raw']}, indent=2, ensure_ascii=False)
+        gm = {'text': "Error"}
+        # abort(404)
+    js = json.dumps({'source': file,'data': gm, 'len': num}, indent=2, ensure_ascii=False)
+    resp = Response(js, status=200, mimetype='application/json; charset=utf-8')
+    return resp
 
 
 if __name__ == '__main__':

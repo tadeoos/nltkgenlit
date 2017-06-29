@@ -16,21 +16,23 @@
                 </li>
                 <li>
                     <label for="quantity">Length</label>
-                    <input type="number" name="quantity" min="1" max="12" value="{{num}}">
+                    <input id="len" type="number" name="quantity" min="1" max="12" value="{{num}}">
                     <span># of sentences to generate</span>
                 </li>
                 <li>
                     <input type="submit" name="normal" value="go">
                 </li>
                 <li>
-                    <input type="submit" name="random" value="random">
+                    <button id="button">Random</button>
+                    {# <input type="submit" name="random" value="random"> #}
                 </li>
             </ul>
         </form>
+        
     </div>
     <div class="col-8">
         <div id="res">
-            <p>{{gm|safe}}</p>
+            <p id="res-anaconda">{{gm|safe}}</p>
         <p class="res-text">LEGEND (# of possible choices):<br>
             <span class="res-grey">grey</span> = 1<br>
             <span class="res-green">green</span> <=10<br>
@@ -45,4 +47,38 @@
         </div>
     </div>
     </div>
+
+
+<script type="text/javascript">
+
+var    loadBtn = document.getElementById("button"),
+    pAnaconda = document.getElementById("res-anaconda");
+
+function download() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "rand", true);
+    xhr.responseType = "json";
+    xhr.onloadend = function(e) {
+        // progressBar.value = e.loaded;
+        loadBtn.disabled = false;
+        loadBtn.innerHTML = 'Random';
+    };
+    xhr.onload = function (e) {
+        if (this.status == 200) {
+            console.log(xhr.response.source);
+            document.getElementById("len").value = xhr.response.len.toString();
+            pAnaconda.innerHTML = xhr.response.data.text;
+        }
+    };
+    xhr.send(null);
+};
+
+loadBtn.addEventListener("click", function(e) {
+    this.disabled = true;
+    this.innerHTML = "Processing...";
+    download();
+});
+
+</script>
+
 {% endblock %}
