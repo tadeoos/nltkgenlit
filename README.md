@@ -8,9 +8,11 @@
 
 ## Setup
 
-- `cd src`
-- `pip install -r requirements.txt`
-- `python -c "import nltk; nltk.download('punkt')"  # Download the NLTK stuff`
+```bash
+cd src
+pip install -r requirements.txt
+python -c "import nltk; nltk.download('punkt')"  # Download the NLTK stuff
+```
 
 ## DEMO
 
