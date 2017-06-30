@@ -19,6 +19,8 @@ sdir = os.path.join(os.path.abspath(
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['JSON_AS_ASCII'] = False
+app.config["APPLICATION_ROOT"] = "/epygone"
+
 # cors = CORS(app, resources={r"/rand": {"origins": "*"}})
 
 
