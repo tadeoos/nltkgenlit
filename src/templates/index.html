@@ -43,7 +43,7 @@
         <div id="info">
             <p>Choose length and text which tadeoa will imitate.</p>
             <p>His method is very simple: he just randomly generates word by word based on a conditional (trigrams) frequency distribution. The probability space is weighted accordingly.</p>
-            <p>Epygone also publishes an <a href="api" target="_blank">API</a>.</p>
+            <p>Epygone also publishes an <a href="api">API</a>.</p>
         </div>
         <div id="res">
             <p id="res-anaconda"></p>
@@ -56,7 +56,7 @@ var loadBtn = document.getElementById("randButton"),
     pAnaconda = document.getElementById("res-anaconda");
 
 function download(rand, trigBtn, msg) {
-    pAnaconda.innerHTML = "<div id='loader'><img src='epygone/static/25.gif'></div>";
+    pAnaconda.innerHTML = "<div id='loader'><img src='/epygone/static/25.gif'></div>";
     var xhr = new XMLHttpRequest();
     
     if (rand) {
