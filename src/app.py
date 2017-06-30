@@ -16,7 +16,7 @@ ALLOWED_EXTENSIONS = set(['txt'])
 sdir = os.path.join(os.path.abspath(
     os.path.dirname(__file__)), 'static')
 
-app = Flask(__name__, static_folder=sdir, static_url_path="/epygone/static")
+app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['JSON_AS_ASCII'] = False
 # cors = CORS(app, resources={r"/rand": {"origins": "*"}})
