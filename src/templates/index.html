@@ -46,7 +46,7 @@
             <p>There is also an API available at <a href="rand" target="_blank"><code>/rand</code></a> </p>
         </div>
         <div id="res">
-            <p id="res-anaconda">{{gm|safe}}</p>
+            <p id="res-anaconda"></p>
         </div>
     </div>
 </div>
@@ -75,8 +75,8 @@ function download() {
 };
 
 loadBtn.addEventListener("click", function(e) {
-    this.disabled = true;
     pAnaconda.innerHTML = "<div id='loader'><img src='litgen/static/25.gif'></div>";
+    this.disabled = true;
     download();
 });
 </script>

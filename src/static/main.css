@@ -144,18 +144,19 @@ a {
     border:2px solid #DDDDDD;
     margin-bottom: 30px;
     border-radius: 3px;
+    color: #fff;
 }
 /*.form-style-7 li:nth-child(3){
     border:none;
     margin-bottom: 0px;
     text-align: center; 
 }
-
-.form-style-7 li:last-child{
+*/
+#li-clear {
     border:none;
     margin-bottom: 0px;
     text-align: center;
-}*/
+}
 .form-style-7 li > label{
     display: block;
     float: left;
