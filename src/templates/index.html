@@ -8,8 +8,8 @@
                 <a href="upload" style="text-decoration: none;">
                     <button class="form-button">UPLOAD FILE</button>
                 </a>
-                <button class="form-button">GO</button>
-                <button class="form-button" id="button">RANDOM</button>
+                <button class="form-button" id="goButton">GO</button>
+                <button class="form-button" id="randButton">RANDOM</button>
             </div>
             <ul>
                 <li>
@@ -43,7 +43,7 @@
         <div id="info">
             <p>Choose length and text which tadeoa will imitate.</p>
             <p>His method is very simple: he just randomly generates word by word based on a conditional (trigrams) frequency distribution. The probability space is weighted accordingly.</p>
-            <p>There is also an API available at <a href="rand" target="_blank"><code>/rand</code></a> </p>
+            <p>Epygone also publishes an <a href="api" target="_blank">API</a>.</p>
         </div>
         <div id="res">
             <p id="res-anaconda"></p>
@@ -51,17 +51,24 @@
     </div>
 </div>
 <script type="text/javascript">
-var loadBtn = document.getElementById("button"),
+var loadBtn = document.getElementById("randButton"),
+    goBtn = document.getElementById("goButton"),
     pAnaconda = document.getElementById("res-anaconda");
 
-function download() {
+function download(rand, trigBtn, msg) {
+    pAnaconda.innerHTML = "<div id='loader'><img src='litgen/static/25.gif'></div>";
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "rand", true);
+    
+    if (rand) {
+        xhr.open("GET", "api/rand", true);
+    } else {
+        xhr.open("GET", "api/"+document.getElementById("book").value +"/"+document.getElementById('len').value, true);
+    }
     xhr.responseType = "json";
     xhr.onloadend = function(e) {
         // progressBar.value = e.loaded;
-        loadBtn.disabled = false;
-        loadBtn.innerHTML = 'RANDOM';
+        trigBtn.disabled = false;
+        trigBtn.innerHTML = msg;
     };
     xhr.onload = function(e) {
         if (this.status == 200) {
@@ -75,9 +82,12 @@ function download() {
 };
 
 loadBtn.addEventListener("click", function(e) {
-    pAnaconda.innerHTML = "<div id='loader'><img src='litgen/static/25.gif'></div>";
     this.disabled = true;
-    download();
+    download(true, this, 'RANDOM');
+});
+goBtn.addEventListener("click", function(e) {
+    this.disabled = true;
+    download(false, goBtn, goBtn.innerHTML);
 });
 </script>
 {% endblock %}

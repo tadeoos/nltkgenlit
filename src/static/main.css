@@ -1,6 +1,11 @@
 * {
     box-sizing: border-box;
 }
+
+html {
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
 .row::after {
     content: "";
     clear: both;
@@ -10,6 +15,12 @@
     float: left;
     padding: 15px;
 }
+
+[class*="col-"] {
+    width: 100%;
+}
+
+@media only screen and (min-width: 768px) {
 .col-1 {width: 8.33%;}
 .col-2 {width: 16.66%;}
 .col-3 {width: 25%;}
@@ -22,9 +33,8 @@
 .col-10 {width: 83.33%;}
 .col-11 {width: 91.66%;}
 .col-12 {width: 100%;}
-html {
-    font-family: "Lucida Console", Monaco, monospace;
 }
+
 
 p {
     color: #fff;
@@ -34,6 +44,7 @@ body {
     /*background-color: #96A098;*/
     margin: 0px;
     background-color: #113F55;
+    color: #fff;
 
 }
 
@@ -113,7 +124,7 @@ pre {
 }
 
 a {
-    color: #106022;
+    color: #F8ECC2;
 }
 
 .form-style-7{
