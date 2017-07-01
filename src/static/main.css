@@ -35,6 +35,23 @@ html {
 .col-12 {width: 100%;}
 }
 
+#api {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.api-end {
+    background-color: #2B803E;
+    padding: 1px 6px;
+    border-radius: 2px;
+}
+
+.api-ex {
+    /*background: cadetblue;*/
+    border: solid 2px;
+    padding: 0 20px;
+    border-radius: 6px;
+}
 
 p {
     color: #fff;

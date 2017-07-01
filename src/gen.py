@@ -45,7 +45,7 @@ def nicePrint(tab, freq, start=1, html=False):
         for i in range(len(tab2)):
             color = get_color(colors, freq[i])
             result.append(
-                '<span class="res-{}">{}</span>'.format(color, tab2[i]))
+                "<span class='res-{}'>{}</span>".format(color, tab2[i]))
         return ''.join(result)
 
     for i in range(len(tab2)):

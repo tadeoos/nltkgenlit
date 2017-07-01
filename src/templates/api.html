@@ -1,13 +1,38 @@
 {% extends 'base.html' %} {% block content %}
 <div class="row">
-	<div class="col-1"><a href="/epygone" style="text-decoration: none;">
+    <div class="col-12">
+        <div id="api">
+            <h2>EPYGONE API</h2>
+            <p><span class="api-end">/api/rand</span>
+                <br>
+                <br>Returns json with random</p>
+                <p>Example response:</p>
+                <pre class="api-ex"><xmp>
+{
+  "len": 1,
+  "source": "pl-szulc-sklepy.txt",
+  "data": {
+    "raw": "Nasłuchiwał i słyszał.",
+    "text": "<span class='res-magenta'>Nasłuchiwał</span>
+             <span class='res-grey'> i</span>
+             <span class='res-grey'> słyszał</span>
+             <span class='res-grey'>.</span>",
+    "stats": [
+      0.0,
+      1,
+      0
+    ]
+  }
+}
+</xmp></pre>
+            <p><span class="api-end">/api/[book]/[num]</span></br>
+                <br>Returns <code>num</code> senteneces generetad based upon a given <code>book</code>. Book is matched against a <code>startswith()</code> string method, so the actual url can be shortened e.g <a href="api/pl-szu/4">api/pl-szu/4</a>.</p>
+            <p>
+                <a href="/epygone" style="text-decoration: none;">
                     <button class="form-button">BACK</button>
-	</a></div>
-    <div class="col-11">
-    	<h2>EPYGONE API</h2>
-    	<p><code>/api/rand</code><br><br>Returns json with random</p>
-    	<p><code>/api/[book]/[num]</code></br><br>Returns <code>num</code> senteneces generetad based upon a given <code>book</code>. Book is matched against a <code>startswith()</code> string method, co the actual url can be shortened e.g <a href="api/pl-szulc/4">api/pl-szulc/4</a>.
+                </a>
+            </p>
+        </div>
     </div>
 </div>
-
 {% endblock %}
