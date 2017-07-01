@@ -20,39 +20,39 @@ def get_color(dic, i):
     return dic[50]
 
 
-def nicePrint(tab, freq):
-    intp = ['.', ',', ';', '?', '!', ':', "'", '...']
+def nicePrint(tab, freq, start=1, html=False):
+    intp = ['.', ',', ';', '?', '!', ':', '...']
+    quotes = ['"', '`', "'", "``"]
     tab2 = [tab[0]]
-    freq = [2] + freq
+    freq = [start] + freq
     colors = {1: 'grey', 10: 'green', 25: 'blue', 50: 'magenta'}
-    for s in tab[1:]:
-        if s not in intp:
-            tab2.append(' ' + s)
+    # prepare for printing, no spaces around interp
+    for i, word in enumerate(tab[1:]):
+        if word in intp:
+            tab2.append(word)
+        elif word in quotes:
+            if word in tab[:i]:
+                tab2.append(word)
+            else:
+                tab2.append(' ' + word)
+        elif tab2[i].strip() in quotes and tab2[i][0]==" ":
+                tab2.append(word)
         else:
-            tab2.append(s)
+            tab2.append(' ' + word)
+
+    if html:
+        result = []
+        for i in range(len(tab2)):
+            color = get_color(colors, freq[i])
+            result.append(
+                '<span class="res-{}">{}</span>'.format(color, tab2[i]))
+        return ''.join(result)
+
     for i in range(len(tab2)):
         color = get_color(colors, freq[i])
         cprint(tab2[i], color, end='')
     print()
 
-
-def parse_color_for_html(tab, freq):
-    intp = ['.', ',', ';', '?', '!', ':', "'", '...']
-    tab2 = [tab[0]]
-    freq = [2] + freq
-    colors = {1: 'grey', 10: 'green', 25: 'blue', 50: 'magenta'}
-    for s in tab[1:]:
-        if s not in intp:
-            tab2.append(' ' + s)
-        else:
-            tab2.append(s)
-
-    result = []
-    for i in range(len(tab2)):
-        color = get_color(colors, freq[i])
-        # cprint(tab2[i], color, end='')
-        result.append('<span class="res-{}">{}</span>'.format(color, tab2[i]))
-    return ''.join(result)
 
 # thanks to
 # http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python#id1
@@ -88,23 +88,20 @@ def generate_model_random(cfdist, word, num=15):
         word = choose(cfdist, word)
 
 
-def generate_model_random_sent(cfdist, word, num=15, prnt=True):
+def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
     t = [word[0]]
     dots = 0
-    numOfChoices = []
+    numOfChoices = [len(list(cfdist[('.', word[0])].items()))]
     while dots < num:
         t.append(word[1])
         # tutaj komunikujemy ile mozliwcyh rozgalezien na tym słowie
         numOfChoices.append(len(list(cfdist[word].items())))
         word = choose(cfdist, word)
         dots = t.count('.')
-
     if prnt:
+        nicePrint(t, numOfChoices, start=first_choice)
 
-        # print(len(numOfChoices), len(t))
-        nicePrint(t, numOfChoices)
-        # print(t)
-    html = parse_color_for_html(t, numOfChoices)
+    html = nicePrint(t, numOfChoices, html=True, start=first_choice)
 
     # printowanie dziwnych rzeczy
     # print(numOfChoices)
@@ -119,15 +116,14 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
         else:
             counter = max(counter, mounter)
             mounter = 0
-    # print("the longest streak: ", counter)
+
     old_text = re.sub('\s([^\w]{1,2}\s)', '\g<1>', ' '.join(t))
 
     res = {'raw': old_text,
            'text': html,
-           'data': (round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
+           'stats': (round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
                     reduce(lambda x, y: x * y, numOfChoices),
-                    counter
-                    )
+                    counter)
            }
 
     return res
@@ -143,107 +139,69 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     else:
         raw = string
     tokens = nltk.word_tokenize(raw)
-    text1 = nltk.Text(tokens)
-
-    bigrams = nltk.bigrams(text1)
-
-    # ile słów pojawia się tylko raz?
-    if prnt:
-        print('Hapaxów: {:.1%}'.format(
-            len(nltk.probability.FreqDist(text1).hapaxes()) / len(set(text1))))
-
-    trigrams = nltk.trigrams(text1)
-
-    # print(list(trigrams)[:6])
-    cfd = nltk.ConditionalFreqDist(bigrams)
-    # cfd2 = nltk.ConditionalFreqDist(trigrams)
-    cfd2 = nltk.ConditionalFreqDist(
-        ((x, y), z)
-        for x, y, z in trigrams)
-
-    word = gen_first_word(cfd)
-    # print(word)
-    # print(sorted(list(cfd2[word].items()), key = lambda x: x[1], reverse=True))
-
+    book = nltk.Text(tokens)
+    hapaxes = len(nltk.probability.FreqDist(book).hapaxes()) / len(set(book))
+    vocab_count = len(set(book))
+    bigrams = nltk.bigrams(book)
+    trigrams = nltk.trigrams(book)
+    bigram_cfd = nltk.ConditionalFreqDist(bigrams)
+    trigram_cfd = nltk.ConditionalFreqDist(((x, y), z) for x, y, z in trigrams)
+    first_word = gen_first_word(bigram_cfd)
     # generate_model_random(cfd, word, num)
     if prnt:
+        print('Hapaxów: {:.1%}'.format(hapaxes))
         print('--Generated text:\n')
     try:
-        model = generate_model_random_sent(cfd2, word, num, prnt)
-        gm = model['data']
-        averages = [[], [], []]
-        result = model
+        model = generate_model_random_sent(trigram_cfd, word=first_word[
+                                         'word'], num=num, prnt=prnt, first_choice=first_word['choice'])
+        gm = model['stats']
     except Exception as e:
         print('INDEX ERROR: ', e)
         print(traceback.print_exc())
-        result = {
-            'text': '<span class="res-text">There was an error :(</span>'}
+        model={'text': '<span class="res-text">There was an error :(</span>'}
 
-    # for i in range(10):
-    #     model = generate_model_random_sent(cfd2, word, num, False)
-    #     gm = model['data']
-    #     # print('Procent rozgalezien {:.1%} rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(gm[0], len(str(gm[1])), gm[2]))
-    #     averages[0].append(gm[0])
-    #     averages[1].append(gm[1])
-    #     averages[2].append(gm[2])
 
-    # avgs = [sum(a) / len(a) for a in averages]
-    # print('\n--Średnie: \n rozgalezien: {:.1%} ; rząd wielkości drugiej miary: {} najdluzszy skopiowany fragment {}'.format(
-    #    avgs[0], len(str(avgs[1])), avgs[2]))
-
-    return result
-    # print(avgs)
-    # intp = ["...", '?', '!', '.']
-    # for k in cfd:
-    # if k in intp:
-    # print(sorted(list(cfd[k].items()), key = lambda x: x[1], reverse=True))
-
-    # firstCandid = [a for k in cfd for a in cfd[k].items() if k in intp]
-    # print(len(firstCandid))
-    # print(len(oczysc(firstCandid)))
-    # for c in cfd2:
-    # if c[1] == '.':
-    # print(sorted(list(cfd2[c].items()), key = lambda x: x[1], reverse=True))
-
+    return model
 
 def oczysc(l):
     # fukncja sprawia ze dostajemy unique zliczenia słów z początku (porządek
     # po zsumowaniu interp)
-    d = {}
+    d={}
     for (w, n) in l:
         if w in d:
             d[w] += n
         else:
-            d[w] = n
+            d[w]=n
     return list(d.items())
 
 
-def gen_first_word(cfdst, intp=("...", '?', '!', '.')):
-    firstCandid = [a for k in cfdst for a in cfdst[k].items() if k in intp]
-    cfd = sorted(oczysc(firstCandid), key=lambda x: x[1], reverse=True)
-    wght = [n for (w, n) in cfd]
-    wcs = weighted_choice_sub(wght)
-    res = cfd[wcs][0]
-    return res, choose(cfdst, res)
+def gen_first_word(cfdst, intp=('.')):
+    firstCandid=[list(cfdst[word].items()) for word in cfdst if word in intp][
+                      0]  # get word, number tuple of all after interp
+    cfd=sorted(oczysc(firstCandid), key=lambda x: x[1], reverse=True)
+    wght=[n for (w, n) in cfd]
+    wcs=weighted_choice_sub(wght)
+    res=cfd[wcs][0]
+    return {'word': (res.title(), choose(cfdst, res)), 'choice': len(wght)}
 
 
 def game():
     while(True):
         try:
-            t = input("Give me path to the text please..\n> ")
+            t=input("Give me path to the text please..\n> ")
             # w = input("Choose the word to start with..\n")
-            n = int(input("How many sentences would you like the text to have?\n> "))
+            n=int(input("How many sentences would you like the text to have?\n> "))
             # generate_from_text(t,w,n)
             generate_from_text(file=t, num=n)
         except Exception as e:
             print(e)
-        askcon = input('Would you like to continue? (y / n)\n> ')
+        askcon=input('Would you like to continue? (y / n)\n> ')
         if askcon == 'n':
             break
 
 
 if __name__ == "__main__":
-    args = sys.argv
+    args=sys.argv
     if len(args) == 3:
         try:
             generate_from_text(
