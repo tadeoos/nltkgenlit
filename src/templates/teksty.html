@@ -27,6 +27,9 @@
         <p>Please name your file in a "language-author-title.txt" pattern.</p>
         <p> Current library consists of:</p>
         <pre>
+{{files | length}} files
+
+<span style="color:yellow;background-color:grey;">library/</span>
 {% for file in files[0:-1] -%}
 ├── {{file}}
 {% endfor -%}
