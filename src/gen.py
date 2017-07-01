@@ -105,7 +105,7 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True):
         nicePrint(t, numOfChoices)
         # print(t)
     html = parse_color_for_html(t, numOfChoices)
-    
+
     # printowanie dziwnych rzeczy
     # print(numOfChoices)
     # print(sum([1 for n in numOfChoices if n > 1 ])/len(numOfChoices))
@@ -168,7 +168,7 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     # generate_model_random(cfd, word, num)
     if prnt:
         print('--Generated text:\n')
-    try: 
+    try:
         model = generate_model_random_sent(cfd2, word, num, prnt)
         gm = model['data']
         averages = [[], [], []]
@@ -176,7 +176,8 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     except Exception as e:
         print('INDEX ERROR: ', e)
         print(traceback.print_exc())
-        result = {'text': '<span class="res-text">There was an error :(</span>'}
+        result = {
+            'text': '<span class="res-text">There was an error :(</span>'}
 
     # for i in range(10):
     #     model = generate_model_random_sent(cfd2, word, num, False)
@@ -205,7 +206,6 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     # print(sorted(list(cfd2[c].items()), key = lambda x: x[1], reverse=True))
 
 
-
 def oczysc(l):
     # fukncja sprawia ze dostajemy unique zliczenia słów z początku (porządek
     # po zsumowaniu interp)
@@ -224,7 +224,6 @@ def gen_first_word(cfdst, intp=("...", '?', '!', '.')):
     wght = [n for (w, n) in cfd]
     wcs = weighted_choice_sub(wght)
     res = cfd[wcs][0]
-
     return res, choose(cfdst, res)
 
 
@@ -247,7 +246,8 @@ if __name__ == "__main__":
     args = sys.argv
     if len(args) == 3:
         try:
-            generate_from_text(file="teksty/" + args[1], num=int(args[2]))
+            generate_from_text(
+                file="teksty/" + args[1], num=int(args[2]), prnt=1)
         except Exception as e:
             print("Something went wrong... ", e)
             game()

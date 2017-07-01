@@ -31,7 +31,7 @@ def parse_tadeoa(rand=True, **kwargs):
         file = random.choice(files)
         num = random.randint(2, 8)
     else:
-        book = kwargs.get('book', 'pl-szulc-skepy.txt')
+        book = kwargs.get('book', 'pl-szulc-sklepy.txt')
         try:
             file = [b for b in files if b.startswith(book)][0]
         except Exception:
