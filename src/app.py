@@ -58,6 +58,8 @@ def tadeoa():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    files = [name for name in os.listdir(
+        UPLOAD_FOLDER) if not name.startswith('.')]
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -72,12 +74,9 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | tr "|" "\n" > templates/lib.html')
             return redirect('/epygone/upload')
 
-    os.system('tree -C -h teksty/ | aha |  tr "\n" "|" | grep -o "<pre>.*</pre>" | tr "|" "\n" > templates/lib.html')
-
-    return render_template("teksty.html")
+    return render_template("teksty.html", files=files)
 
 
 @app.route('/api', methods=['GET'])

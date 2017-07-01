@@ -24,7 +24,14 @@
         </form>
     </div>
     <div class="col-8">
-        {% include 'lib.html' %}
+        <p>Please name your file in a "language-author-title.txt" pattern.</p>
+        <p> Current library consists of:</p>
+        <pre>
+{% for file in files[0:-1] -%}
+├── {{file}}
+{% endfor -%}
+└── {{ files | last }}
+</pre>
     </div>
     </div>
 {% endblock %}
