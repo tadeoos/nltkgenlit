@@ -117,8 +117,8 @@ pre {
 }
 
 .res-grey{
-    color: #425F66;
-    color: #F8ECC2;
+    color: #d7e5e8;
+    /*color: #F8ECC2;*/
 }
 
 .res-blue{
@@ -127,13 +127,17 @@ pre {
 }
 
 .res-green{
-    color: #6C8306;
+    color: #1abd21;
     /*color: #57B96D;*/
 }
 
 .res-magenta{
     color: #BA216B;
     /*color: #096C1F;*/
+}
+
+.res-yellow{
+    color: #FFC107;
 }
 
 .res-text{

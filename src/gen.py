@@ -14,10 +14,11 @@ from termcolor import cprint
 
 # stuff just for printing
 def get_color(dic, i):
-    for n in sorted(dic.keys()):
+    colors = sorted(dic.keys())
+    for n in colors:
         if n >= i:
             return dic[n]
-    return dic[50]
+    return dic[colors[-1]]
 
 
 def nicePrint(tab, freq, start=1, html=False):
@@ -25,7 +26,7 @@ def nicePrint(tab, freq, start=1, html=False):
     quotes = ['"', '`', "'", "``"]
     tab2 = [tab[0]]
     freq = [start] + freq
-    colors = {1: 'grey', 10: 'green', 25: 'blue', 50: 'magenta'}
+    colors = {1: 'grey', 10: 'green', 25: 'blue', 50: 'magenta', 100: 'yellow'}
     # prepare for printing, no spaces around interp
     for i, word in enumerate(tab[1:]):
         if word in intp:
@@ -120,7 +121,7 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
     old_text = re.sub('\s([^\w]{1,2}\s)', '\g<1>', ' '.join(t))
 
     res = {'raw': old_text,
-           'text': html,
+           'html': html,
            'stats': (round(sum([1 for n in numOfChoices if n > 1]) / len(numOfChoices), 3),
                     reduce(lambda x, y: x * y, numOfChoices),
                     counter)
@@ -147,7 +148,6 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
     bigram_cfd = nltk.ConditionalFreqDist(bigrams)
     trigram_cfd = nltk.ConditionalFreqDist(((x, y), z) for x, y, z in trigrams)
     first_word = gen_first_word(bigram_cfd)
-    # generate_model_random(cfd, word, num)
     if prnt:
         print('Hapaxów: {:.1%}'.format(hapaxes))
         print('--Generated text:\n')

@@ -31,7 +31,7 @@
         <div id="legend">
             <p class="res-text">LEGEND<span class="comment">  # of possible choices</span><br>
                 <br>
-                <span class="res-grey">1</span><<span class="res-green">green</span><=10<<span class="res-blue">blue</span><=25<<span class="res-magenta">magenta</span>
+                <span class="res-grey">1</span><<span class="res-green">green</span><=10<<span class="res-blue">blue</span><=25<<span class="res-magenta">magenta</span><=50<<span class="res-yellow">yellow</span>
             </p>
         </div>
     </div>
@@ -71,7 +71,7 @@ function download(rand, trigBtn, msg) {
             console.log(xhr.response.source);
             document.getElementById("len").value = xhr.response.len.toString();
             document.getElementById('book').value = xhr.response.source
-            pAnaconda.innerHTML = xhr.response.data.text;
+            pAnaconda.innerHTML = xhr.response.data.html;
         }
     };
     xhr.send(null);
