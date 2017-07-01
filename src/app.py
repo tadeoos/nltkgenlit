@@ -84,7 +84,6 @@ def api():
     return render_template("api.html")
 
 @app.route('/api/rand', methods=['GET'])
-# @crossdomain(origin='*')
 def api_random():
     try:
         gm, file, num = parse_tadeoa()
@@ -97,9 +96,15 @@ def api_random():
     resp = Response(js, status=200, mimetype='application/json; charset=utf-8')
     return resp
 
+@app.route('/api/books', methods=['GET'])
+def api_books():
+    files = [name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')]
+    js = json.dumps({'books': files},
+                    indent=2, ensure_ascii=False)
+    resp = Response(js, status=200, mimetype='application/json; charset=utf-8')
+    return resp
 
 @app.route('/api/<string:book>/<int:sents>', methods=['GET'])
-# @crossdomain(origin='*')
 def api_go(book, sents):
     try:
         gm, file, num = parse_tadeoa(rand=0, book=book, sents=sents)

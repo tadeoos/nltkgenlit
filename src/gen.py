@@ -21,6 +21,35 @@ def get_color(dic, i):
     return dic[colors[-1]]
 
 
+def clean(text):
+    interp = ("''", '"')
+    in_quote = False
+    list_of_words = text.split()
+    clean_data = []
+    for i, token in enumerate(list_of_words):
+        if i>0 and list_of_words[i-1][-1] == ',':
+            clean_data.append(token+' ')
+            continue
+        elif not in_quote:
+            if token in interp:
+                in_quote = True
+                clean_data.append(token)
+            else:
+                clean_data.append(token+' ')
+        elif in_quote:
+            if token in interp:
+                in_quote = False
+                clean_data.append(token+' ')
+            elif i == len(list_of_words)-1:
+                clean_data.append(token)
+            elif list_of_words[i+1] in interp:
+                clean_data.append(token)
+            else:
+                clean_data.append(token+' ')
+        else:
+            clean_data.append(token+' ')
+    return ''.join(clean_data)
+
 def nicePrint(tab, freq, start=1, html=False):
     intp = ['.', ',', ';', '?', '!', ':','’', "'",'...']
     quotes = ['"', '`', "”", "``"]
