@@ -22,8 +22,8 @@ def get_color(dic, i):
 
 
 def nicePrint(tab, freq, start=1, html=False):
-    intp = ['.', ',', ';', '?', '!', ':', '...']
-    quotes = ['"', '`', "'", "``"]
+    intp = ['.', ',', ';', '?', '!', ':','’', "'",'...']
+    quotes = ['"', '`', "”", "``"]
     tab2 = [tab[0]]
     freq = [start] + freq
     colors = {1: 'grey', 10: 'green', 25: 'blue', 50: 'magenta', 100: 'yellow'}
