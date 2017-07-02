@@ -3,7 +3,7 @@
 # Example:
 
 from app import app
-
+from paste.translogger import TransLogger
 
 
 # Import CherryPy
@@ -11,11 +11,14 @@ import cherrypy
 
 if __name__ == '__main__':
 
+    app_logged = TransLogger(app)
+
     cherrypy.config.update({
+        'engine.autoreload_on': True,
         'log.screen': True
        })
     # Mount the application
-    cherrypy.tree.graft(app, "/")
+    cherrypy.tree.graft(app_logged, "/")
 
     # Unsubscribe the default server
     cherrypy.server.unsubscribe()

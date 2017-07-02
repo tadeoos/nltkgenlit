@@ -2,3 +2,4 @@ flask
 nltk
 termcolor
 cherrypy
+paste

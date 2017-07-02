@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import fileinput
 import os
 
@@ -23,9 +22,10 @@ def make_merge(outfilename, files):
         for line in fin:
             fout.write(line)
 
+
 if __name__ == '__main__':
+    os.chdir(library)
     for lang in get_langs(files):
         files_to_merge = [file for file in files if file.startswith(lang)]
         outfile = os.path.join(library, lang + '-all.txt')
-        os.chdir(library)
         make_merge(outfile, files_to_merge)
