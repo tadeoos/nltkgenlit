@@ -3,6 +3,7 @@
 import os
 import random
 import json
+import traceback
 from flask import Flask, flash, request, make_response, current_app, redirect, Response, url_for, render_template, abort
 from werkzeug.utils import secure_filename
 from datetime import timedelta
@@ -49,7 +50,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET'])
 def tadeoa():
-    files = [name for name in os.listdir(UPLOAD_FOLDER) if name != '.DS_Store']
+    files = sorted([name for name in os.listdir(UPLOAD_FOLDER) if name != '.DS_Store'])
     file = 'CHOOSE ABOVE'
     gm = {'text': ''}
     num = 1
@@ -98,7 +99,7 @@ def api_random():
 
 @app.route('/api/books', methods=['GET'])
 def api_books():
-    files = [name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')]
+    files = sorted([name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')])
     js = json.dumps({'books': files},
                     indent=2, ensure_ascii=False)
     resp = Response(js, status=200, mimetype='application/json; charset=utf-8')
@@ -110,7 +111,10 @@ def api_go(book, sents):
         gm, file, num = parse_tadeoa(rand=0, book=book, sents=sents)
     except Exception as e:
         print('API ERROR', e)
+        print(traceback.print_exc())
         gm = {'text': "Error"}
+        file = book
+        num = sents
         # abort(404)
     js = json.dumps({'source': file, 'data': gm, 'len': num},
                     indent=2, ensure_ascii=False)

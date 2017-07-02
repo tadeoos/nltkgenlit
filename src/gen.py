@@ -170,7 +170,11 @@ def generate_from_text(string=None, file=None, num=15, prnt=False):
         raw = string
     tokens = nltk.word_tokenize(raw)
     book = nltk.Text(tokens)
-    hapaxes = len(nltk.probability.FreqDist(book).hapaxes()) / len(set(book))
+    try:
+        hapaxes = len(nltk.probability.FreqDist(book).hapaxes()) / len(set(book))
+    except ZeroDivisionError:
+        print(book)
+        hapaxes = 0
     vocab_count = len(set(book))
     bigrams = nltk.bigrams(book)
     trigrams = nltk.trigrams(book)
@@ -205,8 +209,7 @@ def oczysc(l):
 
 
 def gen_first_word(cfdst, intp=('.')):
-    firstCandid=[list(cfdst[word].items()) for word in cfdst if word in intp][
-                      0]  # get word, number tuple of all after interp
+    firstCandid=[list(cfdst[word].items()) for word in cfdst if word in intp][0]  # get word, number tuple of all after interp
     cfd=sorted(oczysc(firstCandid), key=lambda x: x[1], reverse=True)
     wght=[n for (w, n) in cfd]
     wcs=weighted_choice_sub(wght)
