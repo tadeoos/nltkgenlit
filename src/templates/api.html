@@ -1,0 +1,40 @@
+{% extends 'base.html' %} {% block content %}
+<div class="row">
+    <div class="col-12">
+        <div id="api">
+            <h2>EPYGONE API</h2>
+            <p><span class="api-end">/api/rand</span>
+                <br>
+                <br>Returns json.</p>
+            <p>Example response:</p>
+            <pre class="api-ex"><xmp>
+{
+  "len": 1,
+  "source": "pl-szulc-sklepy.txt",
+  "data": {
+    "raw": "Nasłuchiwał i słyszał.",
+    "html": "<span class='res-magenta'>Nasłuchiwał</span>
+             <span class='res-grey'> i</span>
+             <span class='res-grey'> słyszał</span>
+             <span class='res-grey'>.</span>",
+    "stats": [
+      0.0,
+      1,
+      0
+    ]
+  }
+}
+</xmp></pre>
+            <p><span class="api-end">/api/[book]/[num]</span></br>
+                <br>Returns <code>num</code> senteneces generetad based upon a given <code>book</code>. Book is matched against a <code>startswith()</code> string method, so the actual url can be shortened e.g <a href="api/pl-szu/4">api/pl-szu/4</a>.</p>
+            <p><span class="api-end">/api/books</span></br>
+                <br>Returns a list of available texts, e.g <a href="api/books">api/books</a>.</p>
+            <p>
+                <a href="/epygone" style="text-decoration: none;">
+                    <button class="form-button">BACK</button>
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

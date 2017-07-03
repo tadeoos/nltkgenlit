@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-4">
+        <div id="form-buttons">
+                <a href="/epygone" style="text-decoration: none;">
+                    <button class="form-button">BACK</button>
+                </a>
+                <a href="http://www.gutenberg.org/ebooks/" style="text-decoration: none;">
+                    <button class="form-button">PROJECT GUTENBERG</button>
+                </a>
+            </div>
+        <form class="form-style-7" method=post enctype=multipart/form-data>
+            <ul>
+                <li>
+                    <label for="name">File</label>
+                    <input type=file name=file>
+                    <span>upload a .txt file</span>
+                </li>
+                <li id="li-clear">
+                    <input type="submit" value="upload">
+                </li>
+            </ul>
+        </form>
+    </div>
+    <div class="col-8">
+        <p>Please name your file in a "language-author-title.txt" pattern.</p>
+        <p> Current library consists of:</p>
+        <pre>
+{{files | length}} files
+
+<span style="color:yellow;background-color:grey;">library/</span>
+{% for file in files[0:-1] -%}
+├── {{file}}
+{% endfor -%}
+└── {{ files | last }}
+</pre>
+    </div>
+    </div>
+{% endblock %}

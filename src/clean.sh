@@ -1,0 +1,1 @@
+docker stop main && docker rm main && docker rmi main

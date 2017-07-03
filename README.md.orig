@@ -7,6 +7,18 @@ A very naive epigone and consumer of books.
 make sure you have below commands available from CLI.
 
 - python `>= 3.2`
+<<<<<<< HEAD
+- [nltk](http://www.nltk.org/install.html) (on OSX, `python3.5 -m pip install nltk`)
+
+
+## Setup
+
+- Download the NLTK stuff - run this in python:
+```
+import nltk
+nltk.download()
+```
+=======
 - [aha](https://launchpad.net/ubuntu/+source/aha)
 - tree
 
@@ -21,3 +33,4 @@ python -c "import nltk; nltk.download('punkt')"  # Download the NLTK data
 ### DEMO
 
 You can see epygone in action [here](http://tadek.tele.com.pl/litgen)
+>>>>>>> prod

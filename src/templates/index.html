@@ -1,0 +1,91 @@
+{% extends 'base.html' %} {% block content %}
+<div class="row">
+    <div class="col-4">
+        {#
+        <p><a href="upload">UPLOAD FILE</a></p> #}
+        <div class="form-style-7" method="" id="tadeoa">
+            <div id="form-buttons">
+                <a href="upload" style="text-decoration: none;">
+                    <button class="form-button">UPLOAD FILE</button>
+                </a>
+                <button class="form-button" id="goButton">GO</button>
+                <button class="form-button" id="randButton">RANDOM</button>
+            </div>
+            <ul>
+                <li>
+                    <label for="book">Book</label>
+                    <select id="book" name="book" form="tadeoa">
+                        {% for file in files%}
+                        <option value="{{file}}" {% if file==org %}selected{% endif %}>{{file}}</option>
+                        {% endfor %}
+                    </select>
+                    <span>Choose a text to imitate</span>
+                </li>
+                <li>
+                    <label for="quantity">Length</label>
+                    <input id="len" type="number" name="quantity" min="1" max="12" value="{{num}}">
+                    <span># of sentences to generate</span>
+                </li>
+            </ul>
+        </div>
+        <div id="legend">
+            <p class="res-text">LEGEND<span class="comment">  # of possible choices</span><br>
+                <br>
+                <span class="res-grey">1</span><<span class="res-green">green</span><=10<<span class="res-blue">blue</span><=25<<span class="res-magenta">magenta</span><=50<<span class="res-yellow">yellow</span>
+            </p>
+        </div>
+    </div>
+    <div class="col-8">
+        <div id="info">
+            <p>Epygone is a random text generator. Build with Python, NLTK and Flask.</p>
+            <p>You can learn more about his internals <a href="">here</a>.</p>
+            <p>Epygone also publishes an <a href="api">API</a>.</p>
+        </div>
+        <div id="res">
+            <p id="res-anaconda"></p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var loadBtn = document.getElementById("randButton"),
+    goBtn = document.getElementById("goButton"),
+    pAnaconda = document.getElementById("res-anaconda");
+
+function download(rand, trigBtn, msg) {
+    pAnaconda.innerHTML = "<div id='loader'><img src='/epygone/static/25.gif'></div>";
+    var xhr = new XMLHttpRequest();
+    
+    if (rand) {
+        xhr.open("GET", "api/rand", true);
+    } else {
+        xhr.open("GET", "api/"+document.getElementById("book").value +"/"+document.getElementById('len').value, true);
+    }
+    xhr.responseType = "json";
+    xhr.onloadend = function(e) {
+        // progressBar.value = e.loaded;
+        trigBtn.disabled = false;
+        trigBtn.innerHTML = msg;
+    };
+    xhr.onload = function(e) {
+        if (this.status == 200) {
+            console.log(xhr.response.source);
+            document.getElementById("len").value = xhr.response.len.toString();
+            document.getElementById('book').value = xhr.response.source
+            pAnaconda.innerHTML = xhr.response.data.html;
+        }else{
+            pAnaconda.innerHTML = 'THERE WAS A TERRIBLE MISTAKE'
+        }
+    };
+    xhr.send(null);
+};
+
+loadBtn.addEventListener("click", function(e) {
+    this.disabled = true;
+    download(true, this, 'RANDOM');
+});
+goBtn.addEventListener("click", function(e) {
+    this.disabled = true;
+    download(false, goBtn, goBtn.innerHTML);
+});
+</script>
+{% endblock %}
