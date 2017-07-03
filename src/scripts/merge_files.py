@@ -1,7 +1,7 @@
 import fileinput
 import os
 
-
+print(os.path.realpath(__file__))
 dir_path = os.path.dirname(os.path.realpath(__file__))
 library = os.path.join(dir_path, '..', 'teksty')
 files = [name for name in os.listdir(
@@ -26,6 +26,6 @@ def make_merge(outfilename, files):
 if __name__ == '__main__':
     os.chdir(library)
     for lang in get_langs(files):
-        files_to_merge = [file for file in files if file.startswith(lang)]
+        files_to_merge = [file for file in files if file.startswith(lang) and lang+'-all.txt' not in file]
         outfile = os.path.join(library, lang + '-all.txt')
         make_merge(outfile, files_to_merge)
