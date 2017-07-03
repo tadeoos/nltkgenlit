@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import json
+import logging
 import os
 import random
-import json
 import traceback
+from logging.handlers import RotatingFileHandler
 from flask import Flask, flash, request, make_response, current_app, redirect, Response, url_for, render_template, abort
 from werkzeug.utils import secure_filename
 from datetime import timedelta
 from functools import update_wrapper
-from gen import generate_from_text
+from gen import generate_from_text, generate_cache
+
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -23,12 +26,20 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['JSON_AS_ASCII'] = False
 app.config["APPLICATION_ROOT"] = "/epygone"
 
-# cors = CORS(app, resources={r"/rand": {"origins": "*"}})
+handler = RotatingFileHandler('foo.log', maxBytes=10000, backupCount=1)
+handler.setLevel(logging.INFO)
+app.logger.addHandler(handler)
 
+
+def get_files():
+    return [name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')]
+
+TEXT_CACHE = generate_cache(UPLOAD_FOLDER, get_files())
+# cors = CORS(app, resources={r"/rand": {"origins": "*"}})
+# print(TEXT_CACHE)
 
 def parse_tadeoa(rand=True, **kwargs):
-    files = [name for name in os.listdir(
-        UPLOAD_FOLDER) if not name.startswith('.')]
+    files = get_files()
     if rand:
         file = random.choice(files)
         num = random.randint(2, 8)
@@ -37,10 +48,11 @@ def parse_tadeoa(rand=True, **kwargs):
         try:
             file = [b for b in files if b.startswith(book)][0]
         except Exception:
+            app.logger.error('An error occurred in parse_tadeoa')
             print('raised')
             raise
         num = kwargs.get('sents', 2)
-    return (generate_from_text(file=UPLOAD_FOLDER + "/" + file, num=num, prnt=0), file, num)
+    return (generate_from_text(file=UPLOAD_FOLDER + "/" + file, num=num, prnt=0, cache=TEXT_CACHE), file, num)
 
 
 def allowed_file(filename):
@@ -88,13 +100,19 @@ def api():
 def api_random():
     try:
         gm, file, num = parse_tadeoa()
+        status = 200
     except Exception as e:
         print('API ERROR', e)
+        print(traceback.print_exc())
+        app.logger.error('api/rand error: {}'.format(traceback.print_exc()))
         gm = {'text': "Error"}
-        # abort(404)
+        file = "error"
+        num = 0
+        status = 500
+
     js = json.dumps({'source': file, 'data': gm, 'len': num},
                     indent=2, ensure_ascii=False)
-    resp = Response(js, status=200, mimetype='application/json; charset=utf-8')
+    resp = Response(js, status=status, mimetype='application/json; charset=utf-8')
     return resp
 
 @app.route('/api/books', methods=['GET'])
@@ -109,19 +127,22 @@ def api_books():
 def api_go(book, sents):
     try:
         gm, file, num = parse_tadeoa(rand=0, book=book, sents=sents)
+        status = 200
     except Exception as e:
         print('API ERROR', e)
         print(traceback.print_exc())
+        app.logger.error('api/custom error: {}'.format(traceback.print_exc()))
         gm = {'text': "Error"}
         file = book
         num = sents
+        status = 500
         # abort(404)
     js = json.dumps({'source': file, 'data': gm, 'len': num},
                     indent=2, ensure_ascii=False)
-    resp = Response(js, status=200, mimetype='application/json; charset=utf-8')
+    resp = Response(js, status=status, mimetype='application/json; charset=utf-8')
     return resp
 
 
-if __name__ == '__main__':
-    # print(dir_path, UPLOAD_FOLDER)
-    app.run(debug=1, host='0.0.0.0')
+# if __name__ == '__main__':
+#     # print(dir_path, UPLOAD_FOLDER)
+#     app.run(debug=1, host='0.0.0.0')

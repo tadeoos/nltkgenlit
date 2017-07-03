@@ -72,6 +72,8 @@ function download(rand, trigBtn, msg) {
             document.getElementById("len").value = xhr.response.len.toString();
             document.getElementById('book').value = xhr.response.source
             pAnaconda.innerHTML = xhr.response.data.html;
+        }else{
+            pAnaconda.innerHTML = 'THERE WAS A TERRIBLE MISTAKE'
         }
     };
     xhr.send(null);
