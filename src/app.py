@@ -4,13 +4,20 @@ import json
 import logging
 import os
 import random
+import sys
 import traceback
 from logging.handlers import RotatingFileHandler
-from flask import Flask, flash, request, make_response, current_app, redirect, Response, url_for, render_template, abort
+from flask import Flask, flash, request, make_response, redirect, Response, url_for, render_template, abort
 from werkzeug.utils import secure_filename
-from datetime import timedelta
-from functools import update_wrapper
-from gen import generate_from_text, generate_cache
+# from datetime import timedelta
+# from functools import update_wrapper
+from gen import generate_from_text
+from cache import cache_file
+from multiprocessing import Process, Queue
+from pympler import asizeof
+# from redis import Redis
+
+
 
 
 
@@ -26,19 +33,41 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['JSON_AS_ASCII'] = False
 app.config["APPLICATION_ROOT"] = "/epygone"
 
+# redis = Redis(host='redis', port=6379)
+
 handler = RotatingFileHandler('foo.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
 app.logger.addHandler(handler)
 
 
 def get_files():
-    return [name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')]
+    return sorted([name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')])
 
-TEXT_CACHE = generate_cache(UPLOAD_FOLDER, get_files())
-# cors = CORS(app, resources={r"/rand": {"origins": "*"}})
-# print(TEXT_CACHE)
+
+TEXT_CACHE = {}
+
+for file in get_files():
+    print('Caching {}...'.format(file))
+    q = Queue()
+    # p = Process(target=cache_file, args=(q, UPLOAD_FOLDER, file))
+    cache_file(q, UPLOAD_FOLDER, file)
+    # p.start()
+    file_dict = q.get()
+    print(type(file_dict))
+    print(file_dict)
+    # p.terminate()
+    # p.join()
+
+    key_name = '{}'.format(file)
+    
+    TEXT_CACHE.update({ key_name : file_dict })
+
+print('CACHE SIZE: {} bytes'.format(asizeof.asizeof(TEXT_CACHE, detail=1)))
+
 
 def parse_tadeoa(rand=True, **kwargs):
+    redis.incr('hits')
+    print('REDIS HITS: ', redis.get('hits'))
     files = get_files()
     if rand:
         file = random.choice(files)
@@ -52,7 +81,9 @@ def parse_tadeoa(rand=True, **kwargs):
             print('raised')
             raise
         num = kwargs.get('sents', 2)
-    return (generate_from_text(file=UPLOAD_FOLDER + "/" + file, num=num, prnt=0, cache=TEXT_CACHE), file, num)
+    res = generate_from_text(file=UPLOAD_FOLDER + "/" +
+                             file, num=num, prnt=0, cache=TEXT_CACHE)
+    return ((res[0], file, num), res[1])
 
 
 def allowed_file(filename):
@@ -62,7 +93,8 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET'])
 def tadeoa():
-    files = sorted([name for name in os.listdir(UPLOAD_FOLDER) if name != '.DS_Store'])
+    files = sorted([name for name in os.listdir(
+        UPLOAD_FOLDER) if name != '.DS_Store'])
     file = 'CHOOSE ABOVE'
     gm = {'text': ''}
     num = 1
@@ -96,10 +128,11 @@ def upload_file():
 def api():
     return render_template("api.html")
 
+
 @app.route('/api/rand', methods=['GET'])
 def api_random():
     try:
-        gm, file, num = parse_tadeoa()
+        gm, file, num = parse_tadeoa()[0]
         status = 200
     except Exception as e:
         print('API ERROR', e)
@@ -112,21 +145,25 @@ def api_random():
 
     js = json.dumps({'source': file, 'data': gm, 'len': num},
                     indent=2, ensure_ascii=False)
-    resp = Response(js, status=status, mimetype='application/json; charset=utf-8')
+    resp = Response(js, status=status,
+                    mimetype='application/json; charset=utf-8')
     return resp
+
 
 @app.route('/api/books', methods=['GET'])
 def api_books():
-    files = sorted([name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')])
+    files = sorted([name for name in os.listdir(
+        UPLOAD_FOLDER) if not name.startswith('.')])
     js = json.dumps({'books': files},
                     indent=2, ensure_ascii=False)
     resp = Response(js, status=200, mimetype='application/json; charset=utf-8')
     return resp
 
+
 @app.route('/api/<string:book>/<int:sents>', methods=['GET'])
 def api_go(book, sents):
     try:
-        gm, file, num = parse_tadeoa(rand=0, book=book, sents=sents)
+        gm, file, num = parse_tadeoa(rand=0, book=book, sents=sents)[0]
         status = 200
     except Exception as e:
         print('API ERROR', e)
@@ -139,7 +176,8 @@ def api_go(book, sents):
         # abort(404)
     js = json.dumps({'source': file, 'data': gm, 'len': num},
                     indent=2, ensure_ascii=False)
-    resp = Response(js, status=status, mimetype='application/json; charset=utf-8')
+    resp = Response(js, status=status,
+                    mimetype='application/json; charset=utf-8')
     return resp
 
 

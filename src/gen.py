@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# import gc
 import random
 import sys
 import re
@@ -8,47 +9,11 @@ import traceback
 import os
 from functools import reduce
 from timeit import time
-
 import nltk
+from nltk.util import trigrams, bigrams
 from termcolor import cprint
 
-
-def generate_cache(path, files):
-    cache_dict = {}
-    time_zero = time.time()
-    for file in files:
-        start_time = time.time()
-        cprint('\n======= processing file {}...'.format(file), color='blue')
-        f = open(os.path.join(path, file), 'rU', encoding='utf-8')
-        raw = f.read()
-        f.close()
-
-        tokens = nltk.word_tokenize(raw)
-        book = nltk.Text(tokens)
-        hapaxes = len(nltk.probability.FreqDist(
-            book).hapaxes()) / len(set(book))
-        vocab_count = len(set(book))
-        print(
-            '=== {:.2f}s -- Text class initialized'.format(time.time() - start_time))
-
-        bigrams = nltk.bigrams(book)
-        bi_cfd = nltk.ConditionalFreqDist(bigrams)
-        print('=== {:.2f}s -- bigrams done'.format(time.time() - start_time))
-
-        trigrams = nltk.trigrams(book)
-        tri_cfd = nltk.ConditionalFreqDist(((x, y), z) for x, y, z in trigrams)
-        print('=== {:.2f}s -- trigrams done'.format(time.time() - start_time))
-
-        file_dict = {'bigrams': bi_cfd, 'trigrams': tri_cfd}
-        cache_dict['{}'.format(file)] = file_dict
-        cache_dict['{}'.format(file)].update(
-            {'hap': hapaxes, 'v_count': vocab_count})
-        cprint('====== {:.2f}s -- cached {}'.format(time.time() -
-                                                    start_time, file), color='green')
-
-    cprint('\n\n=========== CACHE TOOKED {:.2f} seconds\n =========='.format(
-        time.time() - time_zero), color='yellow')
-    return cache_dict
+from cache import decode_file
 
 # stuff just for printing
 
@@ -152,14 +117,15 @@ def choose(cfdist, word, first=None):
         try:
             return (word[1], cfd[wcs][0])
         except TypeError:
-            return ('.', first)
+            return None
+            # return ('.', first)
     return cfd[wcs][0]
 
 
 def generate_model_random(cfdist, word, num=15):
     for i in range(num):
         print(word, end=' ')
-        word = choose(cfdist, word)
+        word = choose(cfdist, str(word))
 
 
 def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
@@ -167,11 +133,19 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
     t = [word[0]]
     dots = 0
     numOfChoices = [len(list(cfdist[('.', word[0])].items()))]
+    escape_counter = 0
     while dots < num:
+        escape_counter += 1
+        if escape_counter > 1000:
+            print('Looks like infinite loop...')
+            raise RuntimeError('Infinite loop... choice func problems...')
         t.append(word[1])
         # tutaj komunikujemy ile mozliwcyh rozgalezien na tym słowie
         numOfChoices.append(len(list(cfdist[word].items())))
         word = choose(cfdist, word, first=first_word)
+        if not word:
+            print('breaking...')
+            break
         dots = t.count('.')
     if prnt:
         nicePrint(t, numOfChoices, start=first_choice)
@@ -205,29 +179,26 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
 
 
 def generate_from_text(string=None, file=None, num=15, prnt=False, cache=None):
-    if not (string or file):
-        return None
-    elif file:
-        f = open(file, 'rU', encoding='utf-8')
-        raw = f.read()
-        f.close()
-    else:
-        raw = string
 
-    # if cache:
-    #     bigrams = cache[book]['bigrams']
-    #     trigrams = cache[book]'trigrams']
-    # else:
-    #     bigrams = nltk.bigrams(book)
-    #     trigrams = nltk.trigrams(book)
 
     if cache:
         just_file = os.path.basename(os.path.normpath(file))
-        hapaxes = cache[just_file]['hap']
-        vocab_count = cache[just_file]['v_count']
-        bigram_cfd = cache[just_file]['bigrams']
-        trigram_cfd = cache[just_file]['trigrams']
+        # cache = json.loads(cache)
+        cache = decode_file(cache[just_file])
+
+        hapaxes = cache['hap']
+        vocab_count = cache['v_count']
+        bigram_cfd = cache['bigrams']
+        trigram_cfd = cache['trigrams']
     else:
+        if not (string or file):
+            return None
+        elif file:
+            f = open(file, 'r', encoding='utf-8')
+            raw = f.read()
+            f.close()
+        else:
+            raw = string
         tokens = nltk.word_tokenize(raw)
         book = nltk.Text(tokens)
         try:
@@ -257,7 +228,7 @@ def generate_from_text(string=None, file=None, num=15, prnt=False, cache=None):
         print(traceback.print_exc())
         model = {'text': '<span class="res-text">There was an error :(</span>'}
 
-    return model
+    return (model, (bigram_cfd, trigram_cfd))
 
 
 def oczysc(l):

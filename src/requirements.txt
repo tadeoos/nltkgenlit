@@ -3,3 +3,4 @@ nltk
 termcolor
 cherrypy
 paste
+pympler

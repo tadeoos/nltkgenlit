@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.5-slim
 MAINTAINER Tadek Teleżyński "tadekte@gmail.com"
 COPY . /app
 WORKDIR /app
