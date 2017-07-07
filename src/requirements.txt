@@ -4,3 +4,5 @@ termcolor
 cherrypy
 paste
 pympler
+humanize
+coverage
