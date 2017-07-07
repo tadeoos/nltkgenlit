@@ -2,6 +2,7 @@
 __pycache__
 *.pyc
 teksty/
+teksty-all/
 servers/
 src/htmlcov
 *.log

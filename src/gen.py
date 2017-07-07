@@ -225,6 +225,7 @@ def generate_from_text(string=None, file=None, num=15, prnt=False, cache=None):
         print('INDEX ERROR: ', e)
         print(traceback.print_exc())
         model = {'text': '<span class="res-text">There was an error :(</span>'}
+        raise
 
     return (model, (bigram_cfd, trigram_cfd))
 

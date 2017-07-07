@@ -138,7 +138,7 @@ def api_random():
         print('API ERROR', e)
         print(traceback.print_exc())
         app.logger.error('api/rand error: {}'.format(traceback.print_exc()))
-        gm = {'text': "Error"}
+        gm = {'html': "Error"}
         file = "error"
         num = 0
         status = 500
