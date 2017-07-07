@@ -45,6 +45,7 @@ def get_files():
 
 
 def make_cache(TEXT_CACHE):
+    ts = time.time()
     for file in get_files():
         t1 = time.time()
         cprint('\n======== Caching {}...'.format(file), color='magenta')
@@ -59,6 +60,8 @@ def make_cache(TEXT_CACHE):
         TEXT_CACHE.update({file: file_dict})
         t2 = time.time()
         cprint('FILE CACHED: {:f}'.format(t2 - t1), 'yellow')
+    tf = time.time()
+    cprint('CACHING TOOK: {:f}'.format(tf - ts), 'red')
     return TEXT_CACHE
 
 TEXT_CACHE = make_cache({})

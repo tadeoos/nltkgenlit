@@ -103,31 +103,31 @@ def cache_file(q, path, file):
     vocab = set(book)
     hapaxes = len(nltk.probability.FreqDist(book).hapaxes()) / len(vocab)
     vocab_count = len(vocab)
-    word_mapping = {e:i for i,e in enumerate(vocab)}
+    # word_mapping = {e:i for i,e in enumerate(vocab)}
 
     bi_cfd = nltk.ConditionalFreqDist(bigrams(book))
     tri_cfd = nltk.ConditionalFreqDist(((x, y), z) for x, y, z in trigrams(book))
     
-    cprint('BIGRAM SIZE: {}'.format(naturalsize(asizeof.asizeof(bi_cfd, detail=1))), 'grey')
-    cprint('TRIGRAM SIZE: {}'.format(naturalsize(asizeof.asizeof(tri_cfd, detail=1))), 'grey')
-    cprint('MAP SIZE: {}'.format(naturalsize(asizeof.asizeof(word_mapping, detail=1))), 'grey')
+    # cprint('BIGRAM SIZE: {}'.format(naturalsize(asizeof.asizeof(bi_cfd, detail=1))), 'grey')
+    # cprint('TRIGRAM SIZE: {}'.format(naturalsize(asizeof.asizeof(tri_cfd, detail=1))), 'grey')
+    # cprint('MAP SIZE: {}'.format(naturalsize(asizeof.asizeof(word_mapping, detail=1))), 'grey')
 
     t1 = time.time()
-    bi_compress = encode(word_mapping, bi_cfd)
-    tri_compressed = encode(word_mapping, tri_cfd)
-    file_dict = {'bigrams_d': bi_compress, 'trigrams_d': tri_compressed, 
-                    'hap': hapaxes, 'v_count': vocab_count, 'map': word_mapping}
+    # bi_compress = encode(word_mapping, bi_cfd)
+    # tri_compressed = encode(word_mapping, tri_cfd)
+    # file_dict = {'bigrams_d': bi_compress, 'trigrams_d': tri_compressed, 
+                    # 'hap': hapaxes, 'v_count': vocab_count, 'map': word_mapping}
     old = {'bigrams_d': bi_cfd, 'trigrams_d': {str(k):v for k,v in tri_cfd.items()}, 
                     'hap': hapaxes, 'v_count': vocab_count}
     
 
-    js = json.dumps(file_dict)
+    # js = json.dumps(file_dict)
     js2 = json.dumps(old)
     t2= time.time()
 
     # print('COMP SIZE: {} bytes'.format(asizeof.asizeof(tri_compressed, detail=1)))
-    cprint('JSON SIZE: {}'.format(naturalsize(asizeof.asizeof(js, detail=1))), 'green')
-    cprint('OLD JSON SIZE: {}'.format(naturalsize(asizeof.asizeof(js2, detail=1))), 'green')
+    # cprint('JSON SIZE: {}'.format(naturalsize(asizeof.asizeof(js, detail=1))), 'green')
+    cprint('JSON SIZE: {}'.format(naturalsize(asizeof.asizeof(js2, detail=1))), 'green')
     cprint('Compression took: {:f}s'.format(t2-t1), 'blue')
     q.put(js2)
 
