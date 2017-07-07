@@ -16,13 +16,13 @@ from cache import cache_file
 from multiprocessing import Process, Queue
 from pympler import asizeof
 # from redis import Redis
-
-
+from termcolor import cprint
+from timeit import time
 
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-UPLOAD_FOLDER = dir_path + "/teksty"
+UPLOAD_FOLDER = dir_path + "/teksty/"
 ALLOWED_EXTENSIONS = set(['txt'])
 
 sdir = os.path.join(os.path.abspath(
@@ -44,30 +44,31 @@ def get_files():
     return sorted([name for name in os.listdir(UPLOAD_FOLDER) if not name.startswith('.')])
 
 
-TEXT_CACHE = {}
+def make_cache(TEXT_CACHE):
+    for file in get_files():
+        t1 = time.time()
+        cprint('\n======== Caching {}...'.format(file), color='magenta')
+        q = Queue()
+        p = Process(target=cache_file, args=(q, UPLOAD_FOLDER, file))
+        # cache_file(q, UPLOAD_FOLDER, file)
+        p.start()
+        file_dict = q.get()
+        p.join()
+        # print(type(file_dict))
+        # print(file_dict)
+        TEXT_CACHE.update({file: file_dict})
+        t2 = time.time()
+        cprint('FILE CACHED: {:f}'.format(t2 - t1), 'yellow')
+    return TEXT_CACHE
 
-for file in get_files():
-    print('Caching {}...'.format(file))
-    q = Queue()
-    # p = Process(target=cache_file, args=(q, UPLOAD_FOLDER, file))
-    cache_file(q, UPLOAD_FOLDER, file)
-    # p.start()
-    file_dict = q.get()
-    print(type(file_dict))
-    print(file_dict)
-    # p.terminate()
-    # p.join()
-
-    key_name = '{}'.format(file)
-    
-    TEXT_CACHE.update({ key_name : file_dict })
+TEXT_CACHE = make_cache({})
 
 print('CACHE SIZE: {} bytes'.format(asizeof.asizeof(TEXT_CACHE, detail=1)))
 
 
 def parse_tadeoa(rand=True, **kwargs):
-    redis.incr('hits')
-    print('REDIS HITS: ', redis.get('hits'))
+    # redis.incr('hits')
+    # print('REDIS HITS: ', redis.get('hits'))
     files = get_files()
     if rand:
         file = random.choice(files)
@@ -81,8 +82,7 @@ def parse_tadeoa(rand=True, **kwargs):
             print('raised')
             raise
         num = kwargs.get('sents', 2)
-    res = generate_from_text(file=UPLOAD_FOLDER + "/" +
-                             file, num=num, prnt=0, cache=TEXT_CACHE)
+    res = generate_from_text(file=UPLOAD_FOLDER+file, num=num, prnt=0, cache=TEXT_CACHE)
     return ((res[0], file, num), res[1])
 
 

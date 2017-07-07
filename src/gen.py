@@ -129,7 +129,7 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
     try:
         numOfChoices = [len(list(cfdist[str(('.', word[0]))].items()))]
     except:
-        import ipdb; ipdb.set_trace()  # breakpoint aa5be446 //
+        numOfChoices = [1]
 
     escape_counter = 0
     while dots < num:

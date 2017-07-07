@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 from cache import cache_file, decode_file
 from termcolor import cprint
@@ -9,6 +10,7 @@ import unittest
 from gen import generate_from_text
 import coverage
 
+
 class TestCache(unittest.TestCase):
     # dir_path = os.path.dirname(os.path.realpath(__file__))
     # UPLOAD_FOLDER = dir_path + "/teksty"
@@ -19,23 +21,24 @@ class TestCache(unittest.TestCase):
     def _decode(self):
         for file in self.TEXT_CACHE.keys():
             self.cfd[file] = decode_file(self.TEXT_CACHE[file])
-        cprint('== SIZE OF CFD: {}'.format(asizeof.asizeof(self.cfd)), 'yellow')
+        cprint('== SIZE OF CFD: {}'.format(
+            asizeof.asizeof(self.cfd)), 'yellow')
 
     def _generate(self, file):
-        t1= time.time()
-        generate_from_text(file=self.UPLOAD_FOLDER+file,prnt=1, num=3, cache=self.TEXT_CACHE)
+        t1 = time.time()
+        generate_from_text(file=self.UPLOAD_FOLDER + file,
+                           prnt=1, num=3, cache=self.TEXT_CACHE)
         t3 = time.time()
-        print('time of cached gen: {:f}'.format(t3-t1))
-        generate_from_text(file=self.UPLOAD_FOLDER+file, prnt=0, num=3,)
-        t2= time.time()
-        cprint('TEXT GENERATED: {:f}\n\n'.format(t2-t1), 'yellow')
-
+        print('time of cached gen: {:f}'.format(t3 - t1))
+        generate_from_text(file=self.UPLOAD_FOLDER + file, prnt=0, num=3,)
+        t2 = time.time()
+        cprint('TEXT GENERATED: {:f}\n\n'.format(t2 - t1), 'yellow')
 
     def setUp(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.UPLOAD_FOLDER = dir_path + "/teksty/"
         self.TEXT_CACHE = {}
-        self.cfd = {f : None for f in self._files()}
+        self.cfd = {f: None for f in self._files()}
 
     def test_for_flask(self):
         print()
@@ -50,8 +53,8 @@ class TestCache(unittest.TestCase):
             # print(type(file_dict))
             # print(file_dict)
             self.TEXT_CACHE.update({file: file_dict})
-            t2= time.time()
-            cprint('FILE CACHED: {:f}'.format(t2-t1), 'yellow')
+            t2 = time.time()
+            cprint('FILE CACHED: {:f}'.format(t2 - t1), 'yellow')
             # try:
             #     t1= time.time()
             #     self._decode()
@@ -67,7 +70,8 @@ class TestCache(unittest.TestCase):
                 print(self.TEXT_CACHE.keys(), self.cfd.keys())
                 # import ipdb; ipdb.set_trace()  # breakpoint b2ab45ec //
                 self.fail("Gen failed ({}: {})".format(type(e), e))
-        cprint('== SIZE OF CACHE: {}'.format(asizeof.asizeof(self.TEXT_CACHE)), 'yellow')
+        cprint('== SIZE OF CACHE: {}'.format(
+            asizeof.asizeof(self.TEXT_CACHE)), 'yellow')
 if __name__ == '__main__':
 
     t1 = time.time()
@@ -79,7 +83,7 @@ if __name__ == '__main__':
 
     tests = ['TestCache']
     # unittest.main(module='unit_tests', exit=False,
-                  # verbosity=2, defaultTest=tests)
+    # verbosity=2, defaultTest=tests)
     try:
         unittest.main(verbosity=2)
     except:
