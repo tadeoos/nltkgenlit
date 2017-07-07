@@ -84,12 +84,12 @@ def decode_file(cache_raw):
         # bigrams = { reverse_map(maping, k) : get_cfd_tail(maping, v) for k, v in cache['bigrams_d'].items()}
         # print('bigrams DONE')
 
-        trigrams = { literal_eval(k):v for k, v in cache['trigrams_d'].items()}
+        # trigrams = { literal_eval(k):v for k, v in cache['trigrams_d'].items()}
     except Exception as e:
         # import ipdb; ipdb.set_trace()  # breakpoint 40b515cb //
         raise
 
-    return { 'bigrams': cache['bigrams_d'], 'trigrams': trigrams, 
+    return { 'bigrams': cache['bigrams_d'], 'trigrams': cache['trigrams_d'], 
               'v_count': cache['v_count'], 'hap': cache['hap']}
 
 

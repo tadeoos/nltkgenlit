@@ -14,7 +14,7 @@ from nltk.util import trigrams, bigrams
 from termcolor import cprint
 
 from cache import decode_file
-
+from ast import literal_eval
 # stuff just for printing
 
 
@@ -90,8 +90,6 @@ def nicePrint(tab, freq, start=1, html=False):
     print()
 
 
-# thanks to
-# http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python#id1
 
 
 def weighted_choice_sub(weights):
@@ -103,22 +101,18 @@ def weighted_choice_sub(weights):
 
 
 def choose(cfdist, word, first=None):
-    cfd = sorted(list(cfdist[word].items()), key=lambda x: x[1], reverse=True)
-    # tu by się przydało coś zrobić jak nie ma takiego słowa!
-    # if len(cfd)>1:
-    # print('AA!! Więcej niż jedna opcja - ', len(cfd),word)
-
-    wght = [n for (w, n) in cfd]
-    wcs = weighted_choice_sub(wght)
-    # print('cfd', cfd)
+    try:    
+        cfd = sorted(list(cfdist[str(word)].items()), key=lambda x: x[1], reverse=True)
+        wght = [n for (w, n) in cfd]
+        wcs = weighted_choice_sub(wght)
+    except Exception:
+        import ipdb; ipdb.set_trace()  # breakpoint 94cc8bc5 //
 
     if type(word) == tuple:
-        # print(word(1), cfd[wcs][0])
         try:
             return (word[1], cfd[wcs][0])
         except TypeError:
             return None
-            # return ('.', first)
     return cfd[wcs][0]
 
 
@@ -132,7 +126,11 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
     first_word = word[0]
     t = [word[0]]
     dots = 0
-    numOfChoices = [len(list(cfdist[('.', word[0])].items()))]
+    try:
+        numOfChoices = [len(list(cfdist[str(('.', word[0]))].items()))]
+    except:
+        import ipdb; ipdb.set_trace()  # breakpoint aa5be446 //
+
     escape_counter = 0
     while dots < num:
         escape_counter += 1
@@ -141,7 +139,7 @@ def generate_model_random_sent(cfdist, word, num=15, prnt=True, first_choice=2):
             raise RuntimeError('Infinite loop... choice func problems...')
         t.append(word[1])
         # tutaj komunikujemy ile mozliwcyh rozgalezien na tym słowie
-        numOfChoices.append(len(list(cfdist[word].items())))
+        numOfChoices.append(len(list(cfdist[str(word)].items())))
         word = choose(cfdist, word, first=first_word)
         if not word:
             print('breaking...')
