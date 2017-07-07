@@ -3,3 +3,5 @@ __pycache__
 *.pyc
 teksty/
 servers/
+src/htmlcov
+*.log
