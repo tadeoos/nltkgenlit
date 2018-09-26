@@ -20,13 +20,11 @@ from termcolor import cprint
 from timeit import time
 
 
-
 dir_path = os.path.dirname(os.path.realpath(__file__))
 UPLOAD_FOLDER = dir_path + "/teksty/"
 ALLOWED_EXTENSIONS = set(['txt'])
 
-sdir = os.path.join(os.path.abspath(
-    os.path.dirname(__file__)), 'static')
+sdir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static')
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -64,7 +62,9 @@ def make_cache(TEXT_CACHE):
     cprint('CACHING TOOK: {:f}'.format(tf - ts), 'red')
     return TEXT_CACHE
 
+
 TEXT_CACHE = make_cache({})
+
 
 print('CACHE SIZE: {} bytes'.format(asizeof.asizeof(TEXT_CACHE, detail=1)))
 
@@ -184,6 +184,8 @@ def api_go(book, sents):
     return resp
 
 
-# if __name__ == '__main__':
-#     # print(dir_path, UPLOAD_FOLDER)
-#     app.run(debug=1, host='0.0.0.0')
+if __name__ == '__main__':
+    import stacktracer
+    stacktracer.trace_start("trace.html",interval=5,auto=True) # Set auto flag to always update file!
+    app.run(debug=1, host='0.0.0.0')
+    stacktracer.trace_stop()
